@@ -1,0 +1,19 @@
+# Build products
+[Bb]in/
+[Bb]uild/
+
+# Debug files
+.vimspector.json
+launch.json
+
+# Vim
+*.swp
+*.swo
+
+# VSCode
+.vscode/
+
+# Clang
+.cache/
+compile_commands.json
+
