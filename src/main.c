@@ -8,6 +8,13 @@
 int main(int argc, const char* argv[]) {
 	Chunk chunk;
 	initChunk(&chunk);
+
+	// Add a value
+	size_t constant = addConstant(&chunk, 1.2);
+	writeChunk(&chunk, OP_CONSTANT);
+	writeChunk(&chunk, constant);
+
+	// Return statement
 	writeChunk(&chunk, OP_RETURN);
 
 	disassembleChunk(&chunk, "test chunk");

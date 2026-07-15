@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "../include/debug.h"
+#include "../include/value.h"
 
 // Disassemble chunk of bytecode
 void disassembleChunk(Chunk* chunk, const char* name) {
@@ -14,6 +15,23 @@ void disassembleChunk(Chunk* chunk, const char* name) {
 	// Disassemble instructions
 	for (size_t offset = 0; offset < chunk->count;) 
 		offset = disassembleInstruction(chunk, offset);
+}
+
+// Handle constant value instruction
+static size_t constantInstruction(const char* name, Chunk* chunk, size_t offset) {
+	uint8_t constant = chunk->code[offset + 1];
+
+	// Print name and index of constant
+	printf("%-16s %4d '", name, constant);
+
+	// Print value of constant
+	printValue(chunk->constants.values[constant]);
+
+	// End line
+	printf("'\n");
+
+	// Return offset for next instruction
+	return offset + 2;
 }
 
 // Handle simple instruction
@@ -30,6 +48,8 @@ size_t disassembleInstruction(Chunk* chunk, size_t offset) {
 	// Print instruction
 	uint8_t instruction = chunk->code[offset];
 	switch (instruction) {
+		case OP_CONSTANT:
+			return constantInstruction("OP_CONSTANT", chunk, offset);
 		case OP_RETURN:
 			return simpleInstruction("OP_RETURN", offset);
 		default:
