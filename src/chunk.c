@@ -10,6 +10,7 @@ void initChunk(Chunk* chunk) {
 	chunk->count = 0;
 	chunk->capacity = 0;
 	chunk->code = NULL;
+	chunk->lines = NULL;
 	// Initialize constants with out-pointer
 	initValueArray(&chunk->constants);
 }
@@ -18,6 +19,7 @@ void initChunk(Chunk* chunk) {
 void freeChunk(Chunk* chunk) {
 	// Free memory
 	FREE_ARRAY(uint8_t, chunk->code, chunk->capacity);
+	FREE_ARRAY(size_t, chunk->lines, chunk->capacity);
 	freeValueArray(&chunk->constants);
 
 	// Re-initialize array
@@ -25,17 +27,19 @@ void freeChunk(Chunk* chunk) {
 }
 
 // Append a byte to the end of a chunk
-void writeChunk(Chunk* chunk, uint8_t byte) {
+void writeChunk(Chunk* chunk, uint8_t byte, size_t line) {
 	// Check if capacity has been reached
 	if (chunk->capacity < chunk->count + 1) {
 		size_t oldCapacity = chunk->capacity;
 		// Grow capacity dynamically
 		chunk->capacity = GROW_CAPACITY(oldCapacity);
 		chunk->code = GROW_ARRAY(uint8_t, chunk->code, oldCapacity, chunk->capacity);
+		chunk->lines = GROW_ARRAY(size_t, chunk->lines, oldCapacity, chunk->capacity);
 	}
 
 	// Append byte to the end
 	chunk->code[chunk->count] = byte;
+	chunk->lines[chunk->count] = line;
 	chunk->count++;
 }
 

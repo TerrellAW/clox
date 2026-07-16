@@ -43,7 +43,15 @@ static size_t simpleInstruction(const char* name, size_t offset) {
 // Disassemble an instruction
 size_t disassembleInstruction(Chunk* chunk, size_t offset) {
 	// Print offset at beginning of line
-	printf("%04d ", offset);
+	printf("%04zu ", offset);
+
+	// If same number as last line print vertical line
+	if (offset > 0 && chunk->lines[offset] == chunk->lines[offset - 1]) {
+		printf("\t| ");
+	// Else print source line number
+	} else {
+		printf("%4zu ", chunk->lines[offset]);
+	}
 
 	// Print instruction
 	uint8_t instruction = chunk->code[offset];

@@ -24,6 +24,8 @@ typedef struct {
 	size_t capacity;
 	// Opcodes
 	uint8_t* code;
+	// Line numbers
+	size_t* lines;
 	// Values associated with opcodes
 	ValueArray constants;
 } Chunk;
@@ -43,7 +45,7 @@ void freeChunk(Chunk* chunk);
 /**
  * Append a byte to the end of a chunk
  */
-void writeChunk(Chunk* chunk, uint8_t byte);
+void writeChunk(Chunk* chunk, uint8_t byte, size_t line);
 
 /**
  * Add a new constant to a chunk and return its index
