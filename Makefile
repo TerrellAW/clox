@@ -19,7 +19,7 @@ BIN = $(BIN_DIR)/clox
 .PHONY: all test clean
 
 # Default target
-all: $(BIN) test
+all: clean $(BIN) test
 
 # Link object files into final binary
 $(BIN): $(OBJ)
@@ -37,5 +37,7 @@ test: $(BIN)
 
 # Clean build artifacts via CLI parameter
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR) compile_commands.json
+	@if [ -f $(BIN) ]; then								\
+		rm -rf $(OBJ_DIR) $(BIN_DIR) compile_commands.json;	\
+	fi
 

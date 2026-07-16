@@ -10,7 +10,7 @@
 // Disassemble chunk of bytecode
 void disassembleChunk(Chunk* chunk, const char* name) {
 	// Print name of chunk
-	printf("== %s ==\n", name);
+	printf("\n== %s ==\n", name);
 
 	// Disassemble instructions
 	for (size_t offset = 0; offset < chunk->count;) 
