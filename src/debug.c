@@ -15,6 +15,8 @@ void disassembleChunk(Chunk* chunk, const char* name) {
 	// Disassemble instructions
 	for (size_t offset = 0; offset < chunk->count;) 
 		offset = disassembleInstruction(chunk, offset);
+
+	printf("\n");
 }
 
 // Handle constant value instruction

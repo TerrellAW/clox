@@ -1,11 +1,15 @@
 /**
- * Main Virtual Machine processing
+ * Main entry point
  */
 
 #include "../include/common.h"
 #include "../include/debug.h"
+#include "../include/vm.h"
 
 int main(int argc, const char* argv[]) {
+	// Initialize the virtual machine
+	initVM();
+
 	Chunk chunk;
 	initChunk(&chunk);
 
@@ -18,6 +22,13 @@ int main(int argc, const char* argv[]) {
 	writeChunk(&chunk, OP_RETURN, 3);
 
 	disassembleChunk(&chunk, "test chunk");
+
+	// Interpret code in virtual machine
+	interpret(&chunk);
+
+	// Free the virtual machine
+	freeVM();
+
 	freeChunk(&chunk);
 	return EXIT_SUCCESS;
 }
