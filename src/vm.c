@@ -11,14 +11,35 @@
 // Single global virtual machine instance
 VM vm;
 
+// Reset stack pointer to beginning of array
+static void resetStack() {
+	vm.stackTop = vm.stack;
+}
+
 // Initialize vm
 void initVM() {
-
+	resetStack();
 }
 
 // Free vm
 void freeVM() {
 
+}
+
+// Push value to stack
+void push(Value value) {
+	// Add value to ontop of stack
+	*vm.stackTop = value;
+	// Move pointer past value
+	vm.stackTop++;
+}
+
+// Pop value from stack
+Value pop() {
+	// Decrement stack pointer to value
+	vm.stackTop--;
+	// Return value
+	return *vm.stackTop;
 }
 
 // Run vm's interpreter

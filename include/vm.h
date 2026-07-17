@@ -6,6 +6,12 @@
 #define CLOX_VM_H
 
 #include "chunk.h"
+#include "value.h"
+
+/**
+ * Define maximum size of a stack
+ */
+#define STACK_MAX 256
 
 /**
  * Virtual machine data structure
@@ -16,6 +22,9 @@ typedef struct {
 	Chunk* chunk;
 	// Instruction pointer
 	uint8_t* ip;
+	// Value stack
+	Value stack[STACK_MAX];
+	Value* stackTop;
 } VM;
 
 /**
@@ -37,6 +46,16 @@ void initVM();
  * Virtual machine deallocator
  */
 void freeVM();
+
+/**
+ * Push a value to the top of the stack
+ */
+void push(Value value);
+
+/**
+ * Pop a value from the top of the stack
+ */
+Value pop();
 
 /**
  * Virtual machine entry point
