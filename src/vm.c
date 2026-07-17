@@ -56,7 +56,7 @@ InterpretResult run() {
 // Disassemble and print instructions if in debug mode
 #ifdef DEBUG_TRACE_EXECUTION
 		// Print stack trace
-		printf("\tStack: \t");
+		printf("\t  Stack: \t");
 		for (Value* slot = vm.stack; slot < vm.stackTop; slot++) {
 			printf("[ ");
 			printValue(*slot);
@@ -70,18 +70,20 @@ InterpretResult run() {
 		uint8_t instruction;
 		// Read byte & dispatch instruction based on opcode
 		switch (instruction = READ_BYTE()) {
-			case OP_CONSTANT: {
+			case OP_CONSTANT:
 				// Push value of constant into stack
 				Value constant = READ_CONSTANT();
 				push(constant);
 				break;
-			}
-			case OP_RETURN: {
+			case OP_NEGATE: 
+				// Push negated value to stack
+				push(-pop());
+				break;
+			case OP_RETURN:
 				// Pop value from stack
 				printValue(pop());
 				printf("\n");
 				return INTERPRET_OK;
-			}
 		}
 	}
 

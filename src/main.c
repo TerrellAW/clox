@@ -13,24 +13,19 @@ int main(int argc, const char* argv[]) {
 	Chunk chunk;
 	initChunk(&chunk);
 
-	// Add a value
+	// Add a values to the stack
 	size_t constant = addConstant(&chunk, 1.2);
 	writeChunk(&chunk, OP_CONSTANT, 3);
 	writeChunk(&chunk, constant, 3);
-
-	// Add many values
 	constant = addConstant(&chunk, 66);
 	writeChunk(&chunk, OP_CONSTANT, 6);
 	writeChunk(&chunk, constant, 6);
-	constant = addConstant(&chunk, 42);
-	writeChunk(&chunk, OP_CONSTANT, 12);
-	writeChunk(&chunk, constant, 12);
-	constant = addConstant(&chunk, 888);
-	writeChunk(&chunk, OP_CONSTANT, 12);
-	writeChunk(&chunk, constant, 12);
 
-	// Return statement
-	writeChunk(&chunk, OP_RETURN, 12);
+	// Negate value at top of stack
+	writeChunk(&chunk, OP_NEGATE, 13);
+
+	// Return value at top of stack
+	writeChunk(&chunk, OP_RETURN, 13);
 
 	// Interpret code in virtual machine
 	interpret(&chunk);
