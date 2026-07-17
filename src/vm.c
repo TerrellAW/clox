@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "../include/common.h"
+#include "../include/debug.h"
 #include "../include/vm.h"
 
 // Single global virtual machine instance
@@ -30,6 +31,12 @@ InterpretResult run() {
 	// Main loop
 	// Reads a single bytecode instruction each loop
 	for (;;) {
+
+// Disassemble and print instructions if in debug mode
+#ifdef DEBUG_TRACE_EXECUTION
+		disassembleInstruction(vm.chunk, (size_t)(vm.ip - vm.chunk->code));
+#endif
+
 		uint8_t instruction;
 		// Read byte & dispatch instruction based on opcode
 		switch (instruction = READ_BYTE()) {

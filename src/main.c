@@ -21,8 +21,6 @@ int main(int argc, const char* argv[]) {
 	// Return statement
 	writeChunk(&chunk, OP_RETURN, 3);
 
-	disassembleChunk(&chunk, "test chunk");
-
 	// Interpret code in virtual machine
 	interpret(&chunk);
 
