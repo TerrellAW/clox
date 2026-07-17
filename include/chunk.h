@@ -12,7 +12,7 @@
  * Enum of operation codes
  */
 typedef enum {
-	// Variable values
+	// Constant values
 	OP_CONSTANT,
 	// Arithmetic
 	OP_ADD,

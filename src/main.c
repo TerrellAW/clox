@@ -39,13 +39,21 @@ int main(int argc, const char* argv[]) {
 	// Divide 8 by 0.4	
 	writeChunk(&chunk, OP_DIVIDE, 11);
 
-	// Add results together
+	// Add 6 to 60
 	writeChunk(&chunk, OP_ADD, 11);
 
-	// Negate the final result
+	// Negate 66
 	writeChunk(&chunk, OP_NEGATE, 13);
 
-	// Return the final negated result
+	// Add 108 to stack
+	constant = addConstant(&chunk, 108);
+	writeChunk(&chunk, OP_CONSTANT, 13);
+	writeChunk(&chunk, constant, 13);
+
+	// Add 108 to -66
+	writeChunk(&chunk, OP_ADD, 13);
+
+	// Return the meaning of life
 	writeChunk(&chunk, OP_RETURN, 13);
 
 	// Interpret code in virtual machine
