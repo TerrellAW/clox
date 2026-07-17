@@ -44,10 +44,20 @@ Value pop() {
 
 // Run vm's interpreter
 InterpretResult run() {
+
 // Read byte and increment pointer
 #define READ_BYTE() (*vm.ip++)
+
 // Read all bytes that make up a constant
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
+
+// Do a binary operation with mathematical operators and push result to stack
+// Do while loop allows scoping without errors from trailing semicolon
+#define BINARY_OP(op) do {	\
+		double b = pop();	\
+		double a = pop();	\
+		push(a op b);		\
+	} while (false)
 
 	// Main loop
 	// Reads a single bytecode instruction each loop
@@ -75,6 +85,22 @@ InterpretResult run() {
 				Value constant = READ_CONSTANT();
 				push(constant);
 				break;
+			case OP_ADD:
+				// Do an additive binary operation
+				BINARY_OP(+);
+				break;
+			case OP_SUBTRACT:
+				// Do a subtractive binary operation
+				BINARY_OP(-);
+				break;
+			case OP_MULTIPLY:
+				// Do a multiplicative binary operation
+				BINARY_OP(*);
+				break;
+			case OP_DIVIDE:
+				// Do a divisive binary operation
+				BINARY_OP(/);
+				break;
 			case OP_NEGATE: 
 				// Push negated value to stack
 				push(-pop());
@@ -90,6 +116,7 @@ InterpretResult run() {
 // Undefine macros
 #undef READ_BYTE
 #undef READ_CONSTANT
+#undef BINARY_OP
 }
 
 // Load chunk of bytecode into vm's interpreter
