@@ -2,8 +2,6 @@
  * Debug tools implementation
  */
 
-#include <stdio.h>
-
 #include "../include/debug.h"
 #include "../include/value.h"
 

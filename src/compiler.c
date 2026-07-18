@@ -2,8 +2,6 @@
  * Compiler implementations
  */
 
-#include <stdio.h>
-
 #include "../include/common.h"
 #include "../include/compiler.h"
 #include "../include/scanner.h"

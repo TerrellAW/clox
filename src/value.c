@@ -2,8 +2,6 @@
  * Data value implementations
  */
 
-#include <stdio.h>
-
 #include "../include/memory.h"
 #include "../include/value.h"
 

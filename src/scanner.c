@@ -2,7 +2,6 @@
  * Source code scanner implementations
  */
 
-#include <stdio.h>
 #include <string.h>
 
 #include "../include/common.h"

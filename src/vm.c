@@ -2,8 +2,6 @@
  * Virtual machine implementations
  */
 
-#include <stdio.h>
-
 #include "../include/common.h"
 #include "../include/debug.h"
 #include "../include/compiler.h"
