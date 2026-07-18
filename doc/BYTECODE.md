@@ -28,7 +28,7 @@
 // Offset - Opcode - Index
 0000    OP_CONSTANT     0
 0002    OP_CONSTANT     1
-// Stack: [constants[0]][constants[1]]
+// Stack: [constants[1]][constants[0]]
 ```
 
 ## `OP_ADD`
