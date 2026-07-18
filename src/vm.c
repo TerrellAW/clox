@@ -6,6 +6,7 @@
 
 #include "../include/common.h"
 #include "../include/debug.h"
+#include "../include/compiler.h"
 #include "../include/vm.h"
 
 // Single global virtual machine instance
@@ -119,10 +120,9 @@ InterpretResult run() {
 #undef BINARY_OP
 }
 
-// Load chunk of bytecode into vm's interpreter
-InterpretResult interpret(Chunk* chunk) {
-	vm.chunk = chunk;
-	vm.ip = vm.chunk->code;
-	return run();
+// Interpret and load source code into vm's compiler
+InterpretResult interpret(const char* source) {
+	compile(source);
+	return INTERPRET_OK;
 }
 

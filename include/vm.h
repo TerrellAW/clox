@@ -62,6 +62,6 @@ Value pop();
  * Begins interpreting code for execution
  * Returns a result from the InterpretResult enum
  */
-InterpretResult interpret(Chunk* chunk);
+InterpretResult interpret(const char* source);
 
 #endif
