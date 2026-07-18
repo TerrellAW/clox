@@ -28,7 +28,7 @@
 // Offset - Opcode - Index
 0000    OP_CONSTANT     0
 0002    OP_CONSTANT     1
-// Stack: [constants[1]][constants[0]]
+// Stack: [constants[0]][constants[1]] stackTop
 ```
 
 ## `OP_ADD`
@@ -44,7 +44,7 @@
 0000    OP_CONSTANT     0
 0002    OP_CONSTANT     1
 0004    OP_ADD
-// Stack: [constants[0] + constants[1]]
+// Stack: [constants[0] + constants[1]] stackTop
 ```
 
 ## `OP_SUBTRACT`
@@ -60,7 +60,7 @@
 0000    OP_CONSTANT     0
 0002    OP_CONSTANT     1
 0004    OP_SUBTRACT
-// Stack: [constants[0] - constants[1]]
+// Stack: [constants[0] - constants[1]] stackTop
 ```
 
 ## `OP_MULTIPLY`
@@ -76,7 +76,7 @@
 0000    OP_CONSTANT     0
 0002    OP_CONSTANT     1
 0004    OP_MULTIPLY
-// Stack: [constants[0] * constants[1]]
+// Stack: [constants[0] * constants[1]] stackTop
 ```
 
 ## `OP_DIVIDE`
@@ -92,7 +92,7 @@
 0000    OP_CONSTANT     0
 0002    OP_CONSTANT     1
 0004    OP_DIVIDE
-// Stack: [constants[0] / constants[1]]
+// Stack: [constants[0] / constants[1]] stackTop
 ```
 
 ## `OP_NEGATE`
@@ -107,7 +107,7 @@
 // Offset - Opcode - Index
 0000    OP_CONSTANT     0
 0002    OP_NEGATE
-// Stack: [-constants[0]]
+// Stack: [-constants[0]] stackTop
 ```
 
 ## `OP_RETURN`
@@ -122,6 +122,6 @@
 // Offset - Opcode - Index
 0000    OP_CONSTANT     0
 0002    OP_RETURN
-// Stack:
+// Stack: stackTop
 ```
 
