@@ -17,11 +17,17 @@ Simply run the `make` command. It is currently set up to automatically clean old
 
 ## Syntax
 
-Example code written in DotLox can be found [here](examples/).
+Example code written in DotLox can be found [here](https://github.com/TerrellAW/DotLox/tree/main/examples).
 
-The grammar can be found [here](doc/GRAMMAR.md). 
+The grammar can be found [here](https://github.com/TerrellAW/DotLox/blob/main/doc/GRAMMAR.md). 
 
 Further information on the Lox programming language can be found [here](https://github.com/munificent/craftinginterpreters).
+
+## Compiler
+
+The compiler compiles Lox code into bytecode which is interpreted by the virtual machine.
+
+The bytecode reference can be found [here](doc/BYTECODE.md).
 
 ## References
 
