@@ -57,9 +57,15 @@ static char advance() {
 	return scanner.current[-1];
 }
 
-// Peek at the current un-consumed token
+// Peek at the current unconsumed token
 static char peek() {
 	return *scanner.current;
+}
+
+// Peek at next token after current uncomsumed one
+static char peekNext() {
+	if (isAtEnd()) return '\0';
+	return scanner.current[1];
 }
 
 // Ensure whitespace is ignored
@@ -79,6 +85,24 @@ static void skipWhitespace() {
 			case '\n':
 				scanner.line++;
 				advance();
+				break;
+			// Skip comments
+			case '/':
+				if (peekNext() == '/') {
+					// Ignore entire line
+					while (peek() != '\n' && !isAtEnd()) advance();
+				} else if (peekNext() == '*') {
+					// Ignore until end of multi-line comment
+					while (!(peek() == '*' && peekNext() == '/') && !isAtEnd()) {
+						if (peek() == '\n') scanner.line++;
+						advance();
+					}
+					// Consume end of comment
+					advance();
+					advance();
+				} else {
+					return;
+				}
 				break;
 			default:
 				return;
