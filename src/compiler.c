@@ -6,23 +6,70 @@
 #include "../include/compiler.h"
 #include "../include/scanner.h"
 
+// Parser data structure
+typedef struct {
+	// Store two tokens
+	Token current;
+	Token previous;
+	// Flag errors
+	bool hadError;
+	// Prevent error cascades
+	bool panicMode;
+} Parser;
+
+// Global parser
+Parser parser;
+
+// Handle error messaging and flag
+static void errorAt(Token* token, const char* message) {
+	// Print first part of error message
+	fprintf(stderr, "[line %zu] Error", token->line);
+
+	// Print error location
+	if (token->type == TOKEN_EOF) {
+		fprintf(stderr, " at end");
+	} else if (token->type == TOKEN_ERROR) {
+		// Nothing
+	} else {
+		fprintf(stderr, " at '%.*s'", token->length, token->start);
+	}
+
+	// Print error message
+	fprintf(stderr, ": %s\n", message);
+
+	// Flag error
+	parser.hadError = true;
+}
+
+// Handle error at current token
+static void errorAtCurrent(const char* message) {
+	errorAt(&parser.current, message);
+}
+
+// Advance to next token and store previous
+static void advance() {
+	// Store current in previous
+	parser.previous = parser.current;
+
+	// Get next token
+	for (;;) {
+		parser.current = scanToken();
+		if (parser.current.type != TOKEN_ERROR) break;
+
+		// Handle error token
+		errorAtCurrent(parser.current.start);
+	}
+}
+
 // Begin compilation of source to bytecode
-void compile(const char* source) {
+bool compile(const char* source, Chunk* chunk) {
 	// Initialize scanner
 	initScanner(source);
 
-	// TODO: Remove this
-	size_t line = -1;
-	for (;;) {
-		Token token = scanToken();
-		if (token.line != line) {
-			printf("%4d ", token.line);
-			line = token.line;
-		} else {
-			printf("   | ");
-		}
-		printf("%2d '%.*s'\n", token.type, token.length, token.start);
+	advance();
+	expression();
+	consume(TOKEN_EOF, "Expect end of expression.");
 
-		if (token.type == TOKEN_EOF) break;
-	}
+	// Return success or failure
+	return !parser.hadError;
 }

@@ -120,7 +120,25 @@ InterpretResult run() {
 
 // Interpret and load source code into vm's compiler
 InterpretResult interpret(const char* source) {
-	compile(source);
-	return INTERPRET_OK;
+	// Initialize chunk of bytecode
+	Chunk chunk;
+	initChunk(&chunk);
+
+	// Handle failed compile
+	if (!compile(source, &chunk)) {
+		freeChunk(&chunk);
+		return INTERPRET_COMPILE_ERROR;
+	}
+
+	// Set vm pointers
+	vm.chunk = &chunk;
+	vm.ip	 = vm.chunk->code;
+
+	// Execute code
+	InterpretResult result = run();
+
+	// Free memory
+	freeChunk(&chunk);
+	return result;
 }
 
