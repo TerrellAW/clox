@@ -22,6 +22,9 @@ Parser parser;
 
 // Handle error messaging and flag
 static void errorAt(Token* token, const char* message) {
+	// Enter panic mode to prevent error cascade
+	if (parser.panicMode) return;
+	parser.panicMode = true;
 	// Print first part of error message
 	fprintf(stderr, "[line %zu] Error", token->line);
 
@@ -61,10 +64,24 @@ static void advance() {
 	}
 }
 
+// Consume token if it matches argument, otherwise give error
+static void consume(TokenType type, const char* message) {
+	if (parser.current.type == type) {
+		advance();
+		return;
+	}
+
+	errorAtCurrent(message);
+}
+
 // Begin compilation of source to bytecode
 bool compile(const char* source, Chunk* chunk) {
 	// Initialize scanner
 	initScanner(source);
+
+	// Initialize parser error handling
+	parser.hadError = false;
+	parser.panicMode = false;
 
 	advance();
 	expression();
