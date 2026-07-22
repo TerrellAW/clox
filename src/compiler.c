@@ -17,6 +17,21 @@ typedef struct {
 	bool panicMode;
 } Parser;
 
+// Order of precedence
+typedef enum {
+	PREC_NONE,
+	PREC_ASSIGNMENT,
+	PREC_OR,
+	PREC_AND,
+	PREC_EQUALITY,
+	PREC_COMPARISON,
+	PREC_TERM,
+	PREC_FACTOR,
+	PREC_UNARY,
+	PREC_CALL,
+	PREC_PRIMARY
+} Precedence;
+
 // Global parser
 Parser parser;
 
@@ -50,6 +65,11 @@ static void errorAt(Token* token, const char* message) {
 
 	// Flag error
 	parser.hadError = true;
+}
+
+// Report error
+static void error(const char* message) {
+	errorAt(&parser.previous, message);
 }
 
 // Handle error at current token
@@ -98,14 +118,72 @@ static void emitReturn() {
 	emitByte(OP_RETURN);
 }
 
+// Handle constant value
+static uint8_t makeConstant(Value value) {
+	// Add value to constant pool and retrieve its index
+	size_t constant = addConstant(currentChunk(), value);
+
+	// Ensure index can be converted to 8-bit integer
+	if (constant > UINT8_MAX) {
+		error("Too many constants in one chunk.");
+		return 0;
+	}
+
+	// Return index as 8-bit integer
+	return (uint8_t)constant;
+}
+
+// Append a constant code and operand to a chunk
+static void emitConstant(Value value) {
+	emitBytes(OP_CONSTANT, makeConstant(value));
+}
+
 // Emit return code to end of chunk
 static void endCompiler() {
 	emitReturn();
 }
 
+// Ensure proper parsing precedence
+static void parsePrecedence(Precedence precedence) {
+	//TODO
+}
+
 // Handle expressions
 static void expression() {
-	//TODO
+	parsePrecedence(PREC_ASSIGNMENT);
+}
+
+// Handle parenthesized groupings
+static void grouping() {
+	// Handle grouped expression
+	expression();
+
+	// Look for closing parenthesis
+	consume(TOKEN_RIGHT_PAREN, "Expect ')' after expression.");
+}
+
+// Handle number token
+static void number() {
+	// Convert string to double
+	double value = strtod(parser.previous.start, NULL);
+
+	// Push to runtime stack with constant opcode
+	emitConstant(value);
+}
+
+// Handle unary expression
+static void unary() {
+	// Get operator from previous token
+	TokenType operatorType = parser.previous.type;
+
+	// Compile the operand
+	parsePrecedence(PREC_UNARY);
+
+	// Emit operator instruction
+	switch (operatorType) {
+		case TOKEN_MINUS: emitByte(OP_NEGATE); break;
+		default: return;
+	}
 }
 
 // Begin compilation of source to bytecode
@@ -120,8 +198,13 @@ bool compile(const char* source, Chunk* chunk) {
 	parser.hadError = false;
 	parser.panicMode = false;
 
+	// Consume first character
 	advance();
+
+	// Parse and compile expression
 	expression();
+
+	// Look for end of file
 	consume(TOKEN_EOF, "Expect end of expression.");
 
 	// End program
