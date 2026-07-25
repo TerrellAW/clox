@@ -171,6 +171,28 @@ static void number() {
 	emitConstant(value);
 }
 
+// Handle binary expression
+static void binary() {
+	// Get operator from previous token
+	TokenType operatorType = parser.previous.type;
+
+	// Get parsing rule
+	ParseRule* rule = getRule(operatorType);
+
+	// Get precedence
+	parsePrecedence((Precedence)(rule->precedence + 1));
+
+	// Handle operation
+	switch (operatorType) {
+		case TOKEN_PLUS:	emitByte(OP_ADD);		break;
+		case TOKEN_MINUS:	emitByte(OP_SUBTRACT); 	break;
+		case TOKEN_STAR:	emitByte(OP_MULTIPLY);	break;
+		case TOKEN_SLASH:	emitByte(OP_DIVIDE);	break;
+
+		default: return;
+	}
+}
+
 // Handle unary expression
 static void unary() {
 	// Get operator from previous token
