@@ -32,6 +32,20 @@ typedef enum {
 	PREC_PRIMARY
 } Precedence;
 
+// Function pointer for ParseFn
+typedef void (*ParseFn)();
+
+// Rule from a row in the parsing table
+typedef struct {
+	ParseFn prefix;
+	ParseFn infix;
+	Precedence precedence;
+} ParseRule;
+
+// Forward declarations
+static void expression();
+static ParseRule* getRule(TokenType type);
+
 // Global parser
 Parser parser;
 
@@ -57,7 +71,7 @@ static void errorAt(Token* token, const char* message) {
 	} else if (token->type == TOKEN_ERROR) {
 		// Nothing
 	} else {
-		fprintf(stderr, " at '%.*s'", token->length, token->start);
+		fprintf(stderr, " at '%.*s'", (int)token->length, token->start);
 	}
 
 	// Print error message
@@ -145,7 +159,19 @@ static void endCompiler() {
 
 // Ensure proper parsing precedence
 static void parsePrecedence(Precedence precedence) {
-	//TODO
+	// Consume next token
+	advance();
+
+	// Look up the token's parse rule
+	ParseFn prefixRule = getRule(parser.previous.type)->prefix;
+
+	// If rule is null report syntax error
+	if (prefixRule == NULL) {
+		error("Expect expression.");
+		return;
+	}
+
+	prefixRule();
 }
 
 // Handle expressions
@@ -206,6 +232,56 @@ static void unary() {
 		case TOKEN_MINUS: emitByte(OP_NEGATE); break;
 		default: return;
 	}
+}
+
+// Array of ParseRules, the parser table
+// Uses designated initializer syntax to avoid having to count indexes
+ParseRule rules[] = {
+    [TOKEN_LEFT_PAREN]    = {grouping,  NULL,	  PREC_NONE},
+    [TOKEN_RIGHT_PAREN]   = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_LEFT_BRACE]    = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_RIGHT_BRACE]   = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_COMMA]         = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_DOT]           = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_MINUS]         = {unary,		binary,   PREC_TERM},
+    [TOKEN_PLUS]          = {NULL, 		binary,   PREC_TERM},
+    [TOKEN_SEMICOLON]     = {NULL, 		NULL, 	  PREC_NONE},
+    [TOKEN_SLASH]         = {NULL, 		binary,   PREC_FACTOR},
+    [TOKEN_STAR]          = {NULL, 		binary,   PREC_FACTOR},
+    [TOKEN_BANG]          = {NULL,		NULL, 	  PREC_NONE},
+    [TOKEN_BANG_EQUAL]    = {NULL, 		NULL,     PREC_NONE},
+    [TOKEN_EQUAL]         = {NULL, 		NULL, 	  PREC_NONE},
+    [TOKEN_EQUAL_EQUAL]   = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_GREATER]       = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_GREATER_EQUAL] = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_LESS]          = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_LESS_EQUAL]    = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_IDENT]         = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_STRING]        = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_NUMBER]        = {number, 	NULL,	  PREC_NONE},
+    [TOKEN_AND]           = {NULL,		NULL,	  PREC_NONE},
+    [TOKEN_CLASS]         = {NULL,	 	NULL,	  PREC_NONE},
+    [TOKEN_ELSE]          = {NULL,	 	NULL,	  PREC_NONE},
+    [TOKEN_FALSE]         = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_FOR]           = {NULL,	    NULL,	  PREC_NONE},
+    [TOKEN_FUN]           = {NULL,	    NULL,	  PREC_NONE},
+    [TOKEN_IF]            = {NULL,	    NULL,	  PREC_NONE},
+    [TOKEN_NIL]           = {NULL,   	NULL,	  PREC_NONE},
+    [TOKEN_OR]            = {NULL,	    NULL,	  PREC_NONE},
+    [TOKEN_PRINT]         = {NULL,	    NULL,	  PREC_NONE},
+    [TOKEN_RETURN]        = {NULL,	    NULL,	  PREC_NONE},
+    [TOKEN_SUPER]         = {NULL,	    NULL,	  PREC_NONE},
+    [TOKEN_THIS]          = {NULL,	    NULL,	  PREC_NONE},
+    [TOKEN_TRUE]          = {NULL,   	NULL,	  PREC_NONE},
+    [TOKEN_VAR]           = {NULL,	    NULL,	  PREC_NONE},
+    [TOKEN_WHILE]         = {NULL,	    NULL,	  PREC_NONE},
+    [TOKEN_ERROR]         = {NULL,	    NULL,	  PREC_NONE},
+    [TOKEN_EOF]           = {NULL,	    NULL,	  PREC_NONE},
+};
+
+// Get rule from parsing rules table
+static ParseRule* getRule(TokenType type) {
+	return &rules[type];
 }
 
 // Begin compilation of source to bytecode
