@@ -15,7 +15,7 @@ static void repl() {
 	char line[1024];
 
 	for (;;) {
-		printf("> ");
+		printf("\n> ");
 
 		// Exit if EOF registered on stdin
 		if (!fgets(line, sizeof(line), stdin)) {
