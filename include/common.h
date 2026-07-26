@@ -12,8 +12,9 @@
 #include <stdint.h>
 
 /**
- * Flag for activating debug logs
+ * Flags for activating debug logs
  */
+#define DEBUG_PRINT_CODE
 #define DEBUG_TRACE_EXECUTION
 
 #endif

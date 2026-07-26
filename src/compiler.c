@@ -6,6 +6,11 @@
 #include "../include/compiler.h"
 #include "../include/scanner.h"
 
+// Conditional debug library
+#ifdef DEBUG_PRINT_CODE
+#include "../include/debug.h"
+#endif
+
 // Parser data structure
 typedef struct {
 	// Store two tokens
@@ -155,6 +160,13 @@ static void emitConstant(Value value) {
 // Emit return code to end of chunk
 static void endCompiler() {
 	emitReturn();
+
+// Dump chunk of bytecode to terminal for debugging
+#ifdef DEBUG_PRINT_CODE
+	if (!parser.hadError) {
+		disassembleChunk(currentChunk(), "code");
+	}
+#endif
 }
 
 // Ensure proper parsing precedence
