@@ -58,6 +58,11 @@ InterpretResult run() {
 		push(a op b);		\
 	} while (false)
 
+#ifdef DEBUG_TRACE_EXECUTION
+	// Print stack trace header
+	printf("== stack ==\n");
+#endif
+
 	// Main loop
 	// Reads a single bytecode instruction each loop
 	for (;;) {
@@ -65,15 +70,13 @@ InterpretResult run() {
 // Disassemble and print instructions if in debug mode
 #ifdef DEBUG_TRACE_EXECUTION
 		// Print stack trace
-		printf("\t  Stack: \t");
+		printf("Stack:\t");
 		for (Value* slot = vm.stack; slot < vm.stackTop; slot++) {
 			printf("[ ");
 			printValue(*slot);
 			printf(" ]");
 		}
 		printf("\n");
-		// Log instruction in bytecode
-		disassembleInstruction(vm.chunk, (size_t)(vm.ip - vm.chunk->code));
 #endif
 
 		uint8_t instruction;
@@ -105,6 +108,10 @@ InterpretResult run() {
 				push(-pop());
 				break;
 			case OP_RETURN:
+#ifdef DEBUG_TRACE_EXECUTION
+				// Print stack trace end
+				printf("\n");
+#endif
 				// Pop value from stack
 				printValue(pop());
 				printf("\n");

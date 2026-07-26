@@ -14,7 +14,9 @@
 /**
  * Flags for activating debug logs
  */
+// Prints bytecode
 #define DEBUG_PRINT_CODE
+// Prints bytecode with stack
 #define DEBUG_TRACE_EXECUTION
 
 #endif
