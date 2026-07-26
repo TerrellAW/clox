@@ -171,7 +171,18 @@ static void parsePrecedence(Precedence precedence) {
 		return;
 	}
 
+	// Handle prefix expression
 	prefixRule();
+
+	// Handle infix expression
+	while (precedence <= getRule(parser.current.type)->precedence) {
+		// Consume next token
+		advance();
+		
+		// Handle precedence
+		ParseFn infixRule = getRule(parser.previous.type)->infix;
+		infixRule();
+	}
 }
 
 // Handle expressions
