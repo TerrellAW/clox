@@ -217,7 +217,7 @@ static void number() {
 	double value = strtod(parser.previous.start, NULL);
 
 	// Push to runtime stack with constant opcode
-	emitConstant(value);
+	emitConstant(NUMBER_VAL(value));
 }
 
 // Handle binary expression

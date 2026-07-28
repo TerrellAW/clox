@@ -38,6 +38,6 @@ void writeValueArray(ValueArray* array, Value value) {
 
 // Print value of a constant
 void printValue(Value value) {
-	printf("%g", value);
+	printf("%g", AS_NUMBER(value));
 }
 

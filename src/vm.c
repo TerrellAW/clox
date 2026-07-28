@@ -2,6 +2,8 @@
  * Virtual machine implementations
  */
 
+#include <stdarg.h>
+
 #include "../include/common.h"
 #include "../include/debug.h"
 #include "../include/compiler.h"
@@ -13,6 +15,29 @@ VM vm;
 // Reset stack pointer to beginning of array
 static void resetStack() {
 	vm.stackTop = vm.stack;
+}
+
+// Handle errors during interpreter runtime
+// Can take an arbitrary number of arguments
+static void runtimeError(const char* format, ...) {
+	// List of arbitrary args
+	va_list args;
+	// Start of arbitrary args
+	va_start(args, format);
+	// Print that takes explicit va_list
+	vfprintf(stderr, format, args);
+	// End of arbitrary args
+	va_end(args);
+	// Add newline to stderr output
+	fputs("\n", stderr);
+
+	// Get and display error location
+	size_t instruction = vm.ip - vm.chunk->code - 1;
+	size_t line = vm.chunk->lines[instruction];
+	fprintf(stderr, "[line %zu] in script\n", line);
+
+	// Reset stack
+	resetStack();
 }
 
 // Initialize vm
@@ -41,6 +66,11 @@ Value pop() {
 	return *vm.stackTop;
 }
 
+// Peek at a value at the given location in the stack
+static Value peek(size_t distance) {
+	return vm.stackTop[-1 - distance];
+}
+
 // Run vm's interpreter
 InterpretResult run() {
 
@@ -52,10 +82,15 @@ InterpretResult run() {
 
 // Do a binary operation with mathematical operators and push result to stack
 // Do while loop allows scoping without errors from trailing semicolon
-#define BINARY_OP(op) do {	\
-		double b = pop();	\
-		double a = pop();	\
-		push(a op b);		\
+#define BINARY_OP(valueType, op) 							\
+	do {													\
+		if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) {	\
+			runtimeError("Operands must be numbers.");		\
+			return INTERPRET_RUNTIME_ERROR;					\
+		}													\
+		double b = AS_NUMBER(pop());						\
+		double a = AS_NUMBER(pop());						\
+		push(valueType(a op b));							\
 	} while (false)
 
 #ifdef DEBUG_TRACE_EXECUTION
@@ -89,23 +124,28 @@ InterpretResult run() {
 				break;
 			case OP_ADD:
 				// Do an additive binary operation
-				BINARY_OP(+);
+				BINARY_OP(NUMBER_VAL, +);
 				break;
 			case OP_SUBTRACT:
 				// Do a subtractive binary operation
-				BINARY_OP(-);
+				BINARY_OP(NUMBER_VAL, -);
 				break;
 			case OP_MULTIPLY:
 				// Do a multiplicative binary operation
-				BINARY_OP(*);
+				BINARY_OP(NUMBER_VAL, *);
 				break;
 			case OP_DIVIDE:
 				// Do a divisive binary operation
-				BINARY_OP(/);
+				BINARY_OP(NUMBER_VAL, /);
 				break;
 			case OP_NEGATE: 
-				// Push negated value to stack
-				push(-pop());
+				// Check if value is not a number
+				if (!IS_NUMBER(peek(0))) {
+					runtimeError("Operand must be a number.");
+					return INTERPRET_RUNTIME_ERROR;
+				}
+				// Push negated number value to stack
+				push(NUMBER_VAL(-AS_NUMBER(pop())));
 				break;
 			case OP_RETURN:
 #ifdef DEBUG_TRACE_EXECUTION
