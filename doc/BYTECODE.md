@@ -46,7 +46,7 @@
 // Offset - Opcode - Index
 0000    OP_NIL
 0001    OP_NIL
-// Stack: [0][0] stackTop
+// Stack: [nil][nil] stackTop
 ```
 
 ## `OP_TRUE`
@@ -61,7 +61,7 @@
 // Offset - Opcode - Index
 0000    OP_TRUE
 0001    OP_TRUE
-// Stack: [BOOL_VAL(true)][BOOL_VAL(true)] stackTop
+// Stack: [true][true] stackTop
 ```
 
 ## `OP_FALSE`
@@ -76,7 +76,7 @@
 // Offset - Opcode - Index
 0000    OP_FALSE
 0001    OP_FALSE
-// Stack: [BOOL_VAL(false)][BOOL_VAL(false)] stackTop
+// Stack: [false][false] stackTop
 ```
 
 ## `OP_ADD`
