@@ -71,6 +71,11 @@ static Value peek(size_t distance) {
 	return vm.stackTop[-1 - distance];
 }
 
+// Determine if a value is falsey
+static bool isFalsey(Value value) {
+	return IS_NIL(value) || (IS_BOOL(value) && !AS_BOOL(value));
+}
+
 // Run vm's interpreter
 InterpretResult run() {
 
@@ -149,6 +154,10 @@ InterpretResult run() {
 			case OP_DIVIDE:
 				// Do a divisive binary operation
 				BINARY_OP(NUMBER_VAL, /);
+				break;
+			case OP_NOT:
+				// Check if value is falsy and push to stack as bool
+				push(BOOL_VAL(isFalsey(pop())));
 				break;
 			case OP_NEGATE: 
 				// Check if value is not a number

@@ -72,6 +72,8 @@ size_t disassembleInstruction(Chunk* chunk, size_t offset) {
 			return simpleInstruction("OP_MULTIPLY", offset);
 		case OP_DIVIDE:
 			return simpleInstruction("OP_DIVIDE", offset);
+		case OP_NOT:
+			return simpleInstruction("OP_NOT", offset);
 		case OP_NEGATE:
 			return simpleInstruction("OP_NEGATE", offset);
 		case OP_RETURN:

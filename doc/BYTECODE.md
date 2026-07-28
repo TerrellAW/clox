@@ -16,8 +16,9 @@
 | [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00000101   | 5       |
 | [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00000110   | 6       |
 | [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00000111   | 7       |
-| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00001000   | 8       |
-| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00001001   | 9       |
+| [`OP_NOT`](#OP_NOT)      | 1      | 0b00001000   | 8       |
+| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00001001   | 9       |
+| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00001010   | 10       |
 
 ## `OP_CONSTANT`
 
@@ -141,6 +142,21 @@
 0002    OP_CONSTANT     1
 0004    OP_DIVIDE
 // Stack: [constants[0] / constants[1]] stackTop
+```
+
+## `OP_NOT`
+
+**Purpose:** Pops a value from the stack and falsifies it.
+
+**Inputs:** One value from the top of the stack.
+
+**Outputs:** Result from falsification pushed onto the stack.
+
+```asm
+// Offset - Opcode - Index
+0000    OP_TRUE
+0002    OP_NOT
+// Stack: [false] stackTop
 ```
 
 ## `OP_NEGATE`

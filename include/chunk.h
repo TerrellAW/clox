@@ -12,19 +12,16 @@
  * Enum of operation codes
  */
 typedef enum {
-	// Constant values
 	OP_CONSTANT,
-	// Dedicated types
 	OP_NIL,
 	OP_TRUE,
 	OP_FALSE,
-	// Arithmetic
 	OP_ADD,
 	OP_SUBTRACT,
 	OP_MULTIPLY,
 	OP_DIVIDE,
+	OP_NOT,
 	OP_NEGATE,
-	// Return value
 	OP_RETURN,
 } OpCode;
 
