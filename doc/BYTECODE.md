@@ -18,10 +18,10 @@
 | [`OP_ADD`](#OP_ADD)      | 1      | 0b00000111   | 7       |
 | [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00001000   | 8       |
 | [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00001001   | 9       |
-| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00001010   | 10       |
-| [`OP_NOT`](#OP_NOT)      | 1      | 0b00001011   | 11       |
-| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00001100   | 12       |
-| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00001101   | 13       |
+| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00001010   | 10      |
+| [`OP_NOT`](#OP_NOT)      | 1      | 0b00001011   | 11      |
+| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00001100   | 12      |
+| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00001101   | 13      |
 
 ## `OP_CONSTANT`
 
