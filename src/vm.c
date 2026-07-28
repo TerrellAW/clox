@@ -139,6 +139,21 @@ InterpretResult run() {
 				// Push false onto the stack
 				push(BOOL_VAL(false));
 				break;
+			case OP_EQUAL:
+				// Pop two values from the stack
+				Value a = pop();
+				Value b = pop();
+				// Check equality and push result
+				push(BOOL_VAL(valuesEqual(a, b)));
+				break;
+			case OP_GREATER:
+				// Do a greater than comparison
+				BINARY_OP(BOOL_VAL, >);
+				break;
+			case OP_LESS:
+				// Do a less than comparison
+				BINARY_OP(BOOL_VAL, <);
+				break;
 			case OP_ADD:
 				// Do an additive binary operation
 				BINARY_OP(NUMBER_VAL, +);

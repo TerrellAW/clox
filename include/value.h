@@ -58,6 +58,11 @@ typedef struct {
 } ValueArray;
 
 /**
+ * Finds whether two values are equal
+ */
+bool valuesEqual(Value a, Value b);
+
+/**
  * Value array initializer
  * Initializes an empty constant pool
  */

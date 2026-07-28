@@ -12,13 +12,16 @@
 | [`OP_NIL`](#OP_NIL)      | 1      | 0b00000001   | 1       |
 | [`OP_TRUE`](#OP_TRUE)     | 1      | 0b00000010   | 2       |
 | [`OP_FALSE`](#OP_FALSE)    | 1      | 0b00000011   | 3       |
-| [`OP_ADD`](#OP_ADD)      | 1      | 0b00000100   | 4       |
-| [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00000101   | 5       |
-| [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00000110   | 6       |
-| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00000111   | 7       |
-| [`OP_NOT`](#OP_NOT)      | 1      | 0b00001000   | 8       |
-| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00001001   | 9       |
-| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00001010   | 10       |
+| [`OP_EQUAL`](#OP_EQUAL)    | 1      | 0b00000100   | 4       |
+| [`OP_GREATER`](#OP_GREATER)  | 1      | 0b00000101   | 5       |
+| [`OP_LESS`](#OP_LESS)     | 1      | 0b00000110   | 6       |
+| [`OP_ADD`](#OP_ADD)      | 1      | 0b00000111   | 7       |
+| [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00001000   | 8       |
+| [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00001001   | 9       |
+| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00001010   | 10       |
+| [`OP_NOT`](#OP_NOT)      | 1      | 0b00001011   | 11       |
+| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00001100   | 12       |
+| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00001101   | 13       |
 
 ## `OP_CONSTANT`
 
@@ -78,6 +81,54 @@
 0000    OP_FALSE
 0001    OP_FALSE
 // Stack: [false][false] stackTop
+```
+
+## `OP_EQUAL`
+
+**Purpose:** Pops two values from the stack and compares their equality.
+
+**Inputs:** Two values from the top of the stack.
+
+**Outputs:** True if two values are the same, false otherwise. Result pushed onto the stack.
+
+```asm
+// Offset - Opcode - Index
+0000    OP_TRUE
+0001    OP_FALSE
+0002    OP_EQUAL
+// Stack: [false] stackTop
+```
+
+## `OP_GREATER`
+
+**Purpose:** Pops two values from the stack and compares their numeric value.
+
+**Inputs:** Two values from the top of the stack.
+
+**Outputs:** True if the first value is greater than the second, false otherwise. Result pushed onto the stack.
+
+```asm
+// Offset - Opcode - Index
+0000    OP_CONSTANT     0
+0002    OP_CONSTANT     1
+0004    OP_EQUAL
+// Stack: [constants[0] > constants[1]] stackTop
+```
+
+## `OP_LESS`
+
+**Purpose:** Pops two values from the stack and compares their numeric value.
+
+**Inputs:** Two values from the top of the stack.
+
+**Outputs:** True if the first value is less than the second, false otherwise. Result pushed onto the stack.
+
+```asm
+// Offset - Opcode - Index
+0000    OP_CONSTANT     0
+0002    OP_CONSTANT     1
+0004    OP_EQUAL
+// Stack: [constants[0] < constants[1]] stackTop
 ```
 
 ## `OP_ADD`
@@ -155,7 +206,7 @@
 ```asm
 // Offset - Opcode - Index
 0000    OP_TRUE
-0002    OP_NOT
+0001    OP_NOT
 // Stack: [false] stackTop
 ```
 
