@@ -8,7 +8,7 @@ This is an implementation of the clox programming language from Robert Nystrom's
 
 ## Build
 
-Simply run the `make` command. It is currently set up to automatically clean old build directories and run the program. This will change once the program becomes more advanced and has things such as flags and file input.
+Simply run the `make` command. It will automatically clean out old build results and place the executable in the `bin/` directory.
 
 ### Prerequisites
 
