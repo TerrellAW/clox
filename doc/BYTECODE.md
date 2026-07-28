@@ -9,12 +9,15 @@
 | Opcode        | Offset | Binary       | Decimal |
 | ------------- | ------ | ------------ | ------- |
 | [`OP_CONSTANT`](#OP_CONSTANT) | 2      | 0b00000000   | 0       |
-| [`OP_ADD`](#OP_ADD)      | 1      | 0b00000001   | 1       |
-| [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00000010   | 2       |
-| [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00000011   | 3       |
-| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00000100   | 4       |
-| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00000101   | 5       |
-| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00000110   | 6       |
+| [`OP_NIL`](#OP_NIL)      | 1      | 0b00000001   | 1       |
+| [`OP_TRUE`](#OP_TRUE)     | 1      | 0b00000010   | 2       |
+| [`OP_FALSE`](#OP_FALSE)    | 1      | 0b00000011   | 3       |
+| [`OP_ADD`](#OP_ADD)      | 1      | 0b00000100   | 4       |
+| [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00000101   | 5       |
+| [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00000110   | 6       |
+| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00000111   | 7       |
+| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00001000   | 8       |
+| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00001001   | 9       |
 
 ## `OP_CONSTANT`
 
@@ -29,6 +32,51 @@
 0000    OP_CONSTANT     0
 0002    OP_CONSTANT     1
 // Stack: [constants[0]][constants[1]] stackTop
+```
+
+## `OP_NIL`
+
+**Purpose:** Stores a nil literal on the stack.
+
+**Inputs:** None.
+
+**Outputs:** Nil pushed onto the stack.
+
+```asm
+// Offset - Opcode - Index
+0000    OP_NIL
+0001    OP_NIL
+// Stack: [0][0] stackTop
+```
+
+## `OP_TRUE`
+
+**Purpose:** Stores a true boolean literal on the stack.
+
+**Inputs:** None.
+
+**Outputs:** True pushed onto the stack.
+
+```asm
+// Offset - Opcode - Index
+0000    OP_TRUE
+0001    OP_TRUE
+// Stack: [BOOL_VAL(true)][BOOL_VAL(true)] stackTop
+```
+
+## `OP_FALSE`
+
+**Purpose:** Stores a false boolean literal on the stack.
+
+**Inputs:** None.
+
+**Outputs:** False pushed onto the stack.
+
+```asm
+// Offset - Opcode - Index
+0000    OP_FALSE
+0001    OP_FALSE
+// Stack: [BOOL_VAL(false)][BOOL_VAL(false)] stackTop
 ```
 
 ## `OP_ADD`
