@@ -16,9 +16,12 @@ OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
 # Output binary
 BIN = $(BIN_DIR)/clox
 
-.PHONY: all test clean
+.PHONY: default all test clean
 
 # Default target
+default: clean $(BIN)
+
+# Run all targets
 all: clean $(BIN) test
 
 # Link object files into final binary
