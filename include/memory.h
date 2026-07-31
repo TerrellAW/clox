@@ -8,6 +8,11 @@
 #include "common.h"
 
 /**
+ * Macro to allocate an array with the given type and count
+ */
+#define ALLOCATE(type, count) (type*)reallocate(NULL, 0, sizeof(type) * (count))
+
+/**
  * Macro to scale capacity based on a previous capacity
  */
 #define GROW_CAPACITY(capacity) ((capacity) < 8 ? 8 : (capacity) * 2)

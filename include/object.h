@@ -51,6 +51,11 @@ struct ObjString {
 	char* chars;
 };
 
+/**
+ * Copy a string's characters directly from lexeme into a Lox string
+ */
+ObjString* copyString(const char* chars, size_t length);
+
 // Check data type of an object
 static inline bool isObjType(Value value, ObjType type) {
 	return IS_OBJ(value) && AS_OBJ(value)->type == type;
