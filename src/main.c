@@ -4,9 +4,9 @@
 
 #include <string.h>
 
-#include "../include/common.h"
-#include "../include/error.h"
-#include "../include/vm.h"
+#include "common.h"
+#include "error.h"
+#include "vm.h"
 
 // Runs Read-Eval-Print Loop
 static void repl() {

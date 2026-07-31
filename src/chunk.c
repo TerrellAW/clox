@@ -2,8 +2,8 @@
  * Bytecode chunk implementations
  */
 
-#include "../include/chunk.h"
-#include "../include/memory.h"
+#include "chunk.h"
+#include "memory.h"
 
 // Chunk array initializer
 void initChunk(Chunk* chunk) {

@@ -2,13 +2,13 @@
  * Compiler implementations
  */
 
-#include "../include/common.h"
-#include "../include/compiler.h"
-#include "../include/scanner.h"
+#include "common.h"
+#include "compiler.h"
+#include "scanner.h"
 
 // Conditional debug library
 #ifdef DEBUG_PRINT_CODE
-#include "../include/debug.h"
+#include "debug.h"
 #endif
 
 // Parser data structure

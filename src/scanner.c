@@ -4,7 +4,7 @@
 
 #include <string.h>
 
-#include "../include/scanner.h"
+#include "scanner.h"
 
 // Scanner data structure
 typedef struct {

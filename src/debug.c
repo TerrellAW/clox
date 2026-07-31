@@ -2,8 +2,8 @@
  * Debug tools implementation
  */
 
-#include "../include/debug.h"
-#include "../include/value.h"
+#include "debug.h"
+#include "value.h"
 
 // Disassemble chunk of bytecode
 void disassembleChunk(Chunk* chunk, const char* name) {

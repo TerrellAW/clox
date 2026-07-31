@@ -4,10 +4,10 @@
 
 #include <stdarg.h>
 
-#include "../include/common.h"
-#include "../include/debug.h"
-#include "../include/compiler.h"
-#include "../include/vm.h"
+#include "common.h"
+#include "debug.h"
+#include "compiler.h"
+#include "vm.h"
 
 // Single global virtual machine instance
 VM vm;

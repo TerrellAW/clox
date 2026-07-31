@@ -2,8 +2,8 @@
  * Data value implementations
  */
 
-#include "../include/memory.h"
-#include "../include/value.h"
+#include "memory.h"
+#include "value.h"
 
 // Value array initializer
 void initValueArray(ValueArray* array) {

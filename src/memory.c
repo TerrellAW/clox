@@ -2,7 +2,7 @@
  * Memory management implementations
  */
 
-#include "../include/memory.h"
+#include "memory.h"
 
 // Reallocate memory for all data structures
 void* reallocate(void* pointer, size_t oldSize, size_t newSize) {
