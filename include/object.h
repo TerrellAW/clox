@@ -56,6 +56,11 @@ struct ObjString {
  */
 ObjString* copyString(const char* chars, size_t length);
 
+/**
+ * Print a heap allocated object's value
+ */
+void printObject(Value value);
+
 // Check data type of an object
 static inline bool isObjType(Value value, ObjType type) {
 	return IS_OBJ(value) && AS_OBJ(value)->type == type;

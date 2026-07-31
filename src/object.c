@@ -46,3 +46,15 @@ ObjString* copyString(const char* chars, size_t length) {
 	// Return heap allocated Lox string
 	return allocateString(heapChars, length);
 }
+
+// Print object's value
+void printObject(Value value) {
+	// Handle different types of objects
+	switch (OBJ_TYPE(value)) {
+		case OBJ_STRING:
+			// Print as a C string
+			printf("%s", AS_CSTRING(value));
+			break;
+	}
+}
+
