@@ -8,7 +8,9 @@ This is an implementation of the clox programming language from Robert Nystrom's
 
 ## Build
 
-Simply run the `make` command. It will automatically clean out old build results and place the executable in the `bin/` directory.
+Simply run the `make` command.
+It will automatically clean out old build results and place the executable in the `bin/` directory.
+Generate a configuration file for the clangd language server with `bear -- make`.
 
 ### Prerequisites
 
