@@ -16,7 +16,7 @@ OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
 # Output binary
 BIN = $(BIN_DIR)/clox
 
-.PHONY: default all test clean
+.PHONY: default all test clean bear
 
 # Default target
 default: clean $(BIN)
@@ -44,3 +44,6 @@ clean:
 		rm -rf $(OBJ_DIR) $(BIN_DIR) compile_commands.json;	\
 	fi
 
+# Make with bear configuration tool
+bear:
+	make clean && bear -- make

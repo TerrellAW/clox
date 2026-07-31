@@ -10,7 +10,8 @@ This is an implementation of the clox programming language from Robert Nystrom's
 
 Simply run the `make` command.
 It will automatically clean out old build results and place the executable in the `bin/` directory.
-Generate a configuration file for the clangd language server with `bear -- make`.
+
+To automatically clean out old build results and configs and then build a new executable and configs with Bear, run `make bear`.
 
 ### Prerequisites
 
