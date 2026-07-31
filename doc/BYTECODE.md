@@ -111,7 +111,7 @@
 // Offset - Opcode - Index
 0000    OP_CONSTANT     0
 0002    OP_CONSTANT     1
-0004    OP_EQUAL
+0004    OP_GREATER
 // Stack: [constants[0] > constants[1]] stackTop
 ```
 
@@ -127,7 +127,7 @@
 // Offset - Opcode - Index
 0000    OP_CONSTANT     0
 0002    OP_CONSTANT     1
-0004    OP_EQUAL
+0004    OP_LESS
 // Stack: [constants[0] < constants[1]] stackTop
 ```
 

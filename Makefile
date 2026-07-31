@@ -38,7 +38,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 test: $(BIN)
 	./$(BIN)
 
-# Clean build artifacts via CLI parameter
+# Clean build artifacts and configuration
 clean:
 	@if [ -f $(BIN) ]; then								\
 		rm -rf $(OBJ_DIR) $(BIN_DIR) compile_commands.json;	\
