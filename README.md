@@ -14,8 +14,9 @@ Generate a configuration file for the clangd language server with `bear -- make`
 
 ### Prerequisites
 
-- C compiler
-- Make
+- [C compiler](https://gcc.gnu.org/)
+- [Make](https://ftp.gnu.org/old-gnu/Manuals/make-3.80/html_node/make.html)
+- [Bear (Optional)](https://github.com/rizsotto/bear)
 
 ## Syntax
 
