@@ -37,9 +37,11 @@ typedef enum {
 
 /**
  * Heap allocated object struct
+ * Acts as a node in a linked list that tracks all heap allocated objects
  */
 struct Obj {
 	ObjType type;
+	struct Obj* next;
 };
 
 /**

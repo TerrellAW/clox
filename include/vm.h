@@ -25,6 +25,8 @@ typedef struct {
 	// Value stack
 	Value stack[STACK_MAX];
 	Value* stackTop;
+	// Pointer to start of Obj linked list
+	Obj* objects;
 } VM;
 
 /**
@@ -36,6 +38,11 @@ typedef enum {
 	INTERPRET_COMPILE_ERROR,
 	INTERPRET_RUNTIME_ERROR
 } InterpretResult;
+
+/**
+ * Get external reference to global vm
+ */
+extern VM vm;
 
 /**
  * Virtual machine initializer

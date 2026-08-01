@@ -46,11 +46,13 @@ static void runtimeError(const char* format, ...) {
 // Initialize vm
 void initVM() {
 	resetStack();
+	vm.objects = NULL;
 }
 
 // Free vm
 void freeVM() {
-
+	// Free all remaining objects
+	freeObjects();
 }
 
 // Push value to stack
@@ -193,6 +195,7 @@ InterpretResult run() {
 					push(NUMBER_VAL(a + b));
 				// Other types gives runtime error
 				// TODO: Handle other types concatenation
+				// TODO: Create a macro that can concatenate any data type into a string
 				} else {
 					runtimeError("Operands must be two numbers or two strings.");
 					return INTERPRET_RUNTIME_ERROR;

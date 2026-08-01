@@ -6,6 +6,7 @@
 #define CLOX_MEMORY_H
 
 #include "common.h"
+#include "object.h"
 
 /**
  * Macro to allocate an array with the given type and count
@@ -31,8 +32,19 @@
 	reallocate(pointer, sizeof(type) * (oldCount), 0)
 
 /**
+ * Macro to free memory by reallocating its size to 0
+ * Memory that goes through reallocate can be tracked
+ */
+#define FREE(type, pointer) reallocate(pointer, sizeof(type), 0)
+
+/**
  * Function to reallocate memory for a data structure
  */
 void* reallocate(void* pointer, size_t oldSize, size_t newSize);
+
+/**
+ * Free all objects in the objects linked list
+ */
+void freeObjects();
 
 #endif
