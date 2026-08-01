@@ -52,6 +52,12 @@ struct ObjString {
 };
 
 /**
+ * Produce a string object from a char array
+ * Claims ownership of the already allocated string
+ */
+ObjString* takeString(char* chars, size_t length);
+
+/**
  * Copy a string's characters directly from lexeme into a Lox string
  */
 ObjString* copyString(const char* chars, size_t length);

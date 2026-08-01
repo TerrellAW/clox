@@ -3,9 +3,12 @@
  */
 
 #include <stdarg.h>
+#include <string.h>
 
 #include "common.h"
 #include "debug.h"
+#include "object.h"
+#include "memory.h"
 #include "compiler.h"
 #include "vm.h"
 
@@ -74,6 +77,30 @@ static Value peek(size_t distance) {
 // Determine if a value is falsey
 static bool isFalsey(Value value) {
 	return IS_NIL(value) || (IS_BOOL(value) && !AS_BOOL(value));
+}
+
+// Concatenate two values from the stack into a string
+static void concatenate() {
+	// Pop two values from top of stack as strings
+	ObjString* b = AS_STRING(pop());
+	ObjString* a = AS_STRING(pop());
+
+	// Get total length of both strings
+	size_t length = a->length + b->length;
+
+	// Allocate space for new string
+	char* chars = ALLOCATE(char, length + 1);
+
+	// Copy strings into new string
+	memcpy(chars, a->chars, a->length);
+	memcpy(chars + a->length, b->chars, b->length);
+
+	// Add null terminator
+	chars[length] = '\0';
+
+	// Push result back onto stack
+	ObjString* result = takeString(chars, length);
+	push(OBJ_VAL(result));
 }
 
 // Run vm's interpreter
@@ -155,8 +182,21 @@ InterpretResult run() {
 				BINARY_OP(BOOL_VAL, <);
 				break;
 			case OP_ADD:
-				// Do an additive binary operation
-				BINARY_OP(NUMBER_VAL, +);
+				// Handle string concatenation
+				if (IS_STRING(peek(0)) && IS_STRING(peek(1))) {
+					concatenate();
+				// Handle numeric addition
+				} else if (IS_NUMBER(peek(0)) && IS_NUMBER(peek(1))) {
+					// Do an additive binary operation
+					double b = AS_NUMBER(pop());
+					double a = AS_NUMBER(pop());
+					push(NUMBER_VAL(a + b));
+				// Other types gives runtime error
+				// TODO: Handle other types concatenation
+				} else {
+					runtimeError("Operands must be two numbers or two strings.");
+					return INTERPRET_RUNTIME_ERROR;
+				}
 				break;
 			case OP_SUBTRACT:
 				// Do a subtractive binary operation

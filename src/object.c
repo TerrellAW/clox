@@ -32,6 +32,11 @@ static ObjString* allocateString(char* chars, size_t length) {
 	return string;
 }
 
+// Take string from char array
+ObjString* takeString(char* chars, size_t length) {
+	return allocateString(chars, length);
+}
+
 // Copy lexeme into string
 ObjString* copyString(const char* chars, size_t length) {
 	// Allocate array of chars on the heap
