@@ -35,4 +35,10 @@ void initTable(Table* table);
  */
 void freeTable(Table* table);
 
+/**
+ * Add the given key-value pair to the given hash table
+ * Returns true if a new entry was added, else false
+ */
+bool tableSet(Table* table, ObjString* key, Value value);
+
 #endif
