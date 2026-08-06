@@ -41,4 +41,9 @@ void freeTable(Table* table);
  */
 bool tableSet(Table* table, ObjString* key, Value value);
 
+/**
+ * Copy all entries from one hash table to another
+ */
+void tableAddAll(Table* from, Table* to);
+
 #endif

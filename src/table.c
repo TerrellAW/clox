@@ -57,6 +57,23 @@ static void adjustCapacity(Table* table, size_t capacity) {
 		entries[i].value = NIL_VAL;
 	}
 
+	// Re-insert entries from old table into new larger table
+	for (size_t i = 0; i < table->capacity; i++) {
+		// Get entry from non-empty bucket
+		Entry* entry = &table->entries[i];
+		if (entry->key == NULL) continue;
+
+		// Find destination bucket
+		Entry* dest = findEntry(entries, capacity, entry->key);
+
+		// Insert into destination bucket
+		dest->key	= entry->key;
+		dest->value = entry->value;
+	}
+
+	// Free memory from old array
+	FREE_ARRAY(Entry, table->entries, table->capacity);
+
 	// Initialize table
 	table->entries	= entries;
 	table->capacity	= capacity;
@@ -84,4 +101,18 @@ bool tableSet(Table* table, ObjString* key, Value value) {
 	entry->key	 = key;
 	entry->value = value;
 	return isNewKey;
+}
+
+// Add all entries from one hash table to another
+void tableAddAll(Table* from, Table* to) {
+	// Iterate through entries in source table
+	for (size_t i = 0; i < from->capacity; i++) {
+		// Get bucket from source table
+		Entry* entry = &from->entries[i];
+
+		// If not empty, add its entry to the destination table
+		if (entry->key != NULL) {
+			tableSet(to, entry->key, entry->value);
+		}
+	}
 }
