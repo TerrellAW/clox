@@ -31,19 +31,51 @@ static Entry* findEntry(Entry* entries, size_t capacity, ObjString* key) {
 	// Get bucket index
 	uint32_t index = key->hash % capacity;
 
+	// Variable for storing passed tombstones
+	Entry* tombstone = NULL;
+
 	// Find empty bucket to put entry in with linear probing
 	for (;;) {
 		// Get entry at bucket index
 		Entry* entry = &entries[index];
 
-		// Return entry if it has the same key or is empty
-		if (entry->key == key || entry->key == NULL) {
+		// Check if bucket is empty or a tombstone
+		if (entry->key == NULL) {
+			// Empty bucket
+			if (IS_NIL(entry->value)) {
+				// Return previously passed tombstone or current empty bucket
+				// If a tombstone was passed it will be prioritized
+				// If no tombstone was found, the current empty bucket is used
+				return tombstone != NULL ? tombstone : entry;
+			// Tombstone
+			} else {
+				// Remember tombstone
+				if (tombstone == NULL) tombstone = entry;
+			}
+		// Found key
+		} else if (entry->key == key) {
 			return entry;
 		}
 
 		// Increment index, loop to beginning at the end
 		index = (index + 1) % capacity;
 	}
+}
+
+// Get value associated with key
+bool tableGet(Table* table, ObjString* key, Value* value) {
+	// Check if table is empty
+	if (table->count == 0) return false;
+
+	// Find the bucket associated with the given key
+	Entry* entry = findEntry(table->entries, table->capacity, key);
+
+	// Check if bucket is empty
+	if (entry->key == NULL) return false;
+
+	// Send value to caller
+	*value = entry->value;
+	return true;
 }
 
 // Allocate array of buckets for hash table
@@ -57,6 +89,9 @@ static void adjustCapacity(Table* table, size_t capacity) {
 		entries[i].value = NIL_VAL;
 	}
 
+	// Clear out table count
+	table->count = 0;
+
 	// Re-insert entries from old table into new larger table
 	for (size_t i = 0; i < table->capacity; i++) {
 		// Get entry from non-empty bucket
@@ -69,6 +104,9 @@ static void adjustCapacity(Table* table, size_t capacity) {
 		// Insert into destination bucket
 		dest->key	= entry->key;
 		dest->value = entry->value;
+
+		// Get new count without tombstones
+		table->count++;
 	}
 
 	// Free memory from old array
@@ -93,14 +131,35 @@ bool tableSet(Table* table, ObjString* key, Value value) {
 	// Find a bucket to put the entry in
 	Entry* entry = findEntry(table->entries, table->capacity, key);
 
-	// Check whether a key is new or being updated
+	// Check whether a bucket is empty or a tombstone
 	bool isNewKey = entry->key == NULL;
-	if (isNewKey) table->count++;
+
+	// Increment if its a new non-tombstone bucket
+	if (isNewKey && IS_NIL(entry->value)) table->count++;
 
 	// Add key-value pair to table
 	entry->key	 = key;
 	entry->value = value;
 	return isNewKey;
+}
+
+// Delete an entry by marking it as a tombstone
+bool tableDelete(Table* table, ObjString* key) {
+	// Check if table is empty
+	if (table->count == 0) return false;
+
+	// Find the entry
+	Entry* entry = findEntry(table->entries, table->capacity, key);
+
+	// Return false if entry not found
+	if (entry->key == NULL) return false;
+
+	// Place a tombstone at the entry
+	entry->key	 = NULL;
+	entry->value = BOOL_VAL(true);
+
+	// Successful deletion
+	return true;
 }
 
 // Add all entries from one hash table to another
