@@ -51,6 +51,8 @@ struct ObjString {
 	Obj obj;
 	size_t length;
 	char* chars;
+	// Hash code
+	uint32_t hash;
 };
 
 /**

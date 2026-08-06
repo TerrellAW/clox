@@ -21,25 +21,46 @@ static Obj* allocateObject(size_t size, ObjType type) {
 }
 
 // Create a new string object on the heap
-static ObjString* allocateString(char* chars, size_t length) {
+static ObjString* allocateString(char* chars, size_t length, uint32_t hash) {
 	// Create string object on the heap
 	ObjString* string = ALLOCATE_OBJ(ObjString, OBJ_STRING);
 
 	// Initialize fields
 	string->length 	= length;
 	string->chars	= chars;
+	string->hash	= hash;
 
 	// Return newly allocated lox string
 	return string;
 }
 
+// Calculate a hash code for the given string
+static uint32_t hashString(const char* key, size_t length) {
+	// Start with unsigned integer
+	uint32_t hash = 2166136261u;
+
+	// Convert each character into an integer and hash it
+	for (int i = 0; i < length; i++) {
+		hash ^= (uint8_t)key[i];
+		hash *= 16777619;
+	}
+
+	return hash;
+}
+
 // Take string from char array
 ObjString* takeString(char* chars, size_t length) {
-	return allocateString(chars, length);
+	// Calculate hash code for string
+	uint32_t hash = hashString(chars, length);
+
+	return allocateString(chars, length, hash);
 }
 
 // Copy lexeme into string
 ObjString* copyString(const char* chars, size_t length) {
+	// Calculate hash code for string
+	uint32_t hash = hashString(chars, length);
+
 	// Allocate array of chars on the heap
 	char* heapChars = ALLOCATE(char, length + 1);
 
@@ -50,7 +71,7 @@ ObjString* copyString(const char* chars, size_t length) {
 	heapChars[length] = '\0';
 
 	// Return heap allocated Lox string
-	return allocateString(heapChars, length);
+	return allocateString(heapChars, length, hash);
 }
 
 // Print object's value
