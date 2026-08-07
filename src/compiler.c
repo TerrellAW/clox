@@ -224,7 +224,7 @@ static void printStatement() {
 	expression();
 	
 	// Find end of line
-	consume(TOKEN_SEMICOLON, "Expect ';' after value.")
+	consume(TOKEN_SEMICOLON, "Expect ';' after value.");
 
 	// Instruction to print result of expression
 	emitByte(OP_PRINT);
