@@ -252,9 +252,10 @@
 
 ```asm
 // Offset - Opcode - Index
-0000    OP_CONSTANT     0
-0002    OP_PRINT
+0000    OP_TRUE
+0001    OP_PRINT
 // Stack: stackTop
+// stdout: true
 ```
 
 ## `OP_RETURN`
