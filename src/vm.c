@@ -229,14 +229,19 @@ InterpretResult run() {
 				// Push negated number value to stack
 				push(NUMBER_VAL(-AS_NUMBER(pop())));
 				break;
+			case OP_PRINT:
+				// Pop value from stack and print
+				printValue(pop());
+
+				// Print newline at end of value
+				printf("\n");
+				break;
 			case OP_RETURN:
 #ifdef DEBUG_TRACE_EXECUTION
 				// Print stack trace end
 				printf("\n");
 #endif
-				// Pop value from stack
-				printValue(pop());
-				printf("\n");
+				// Exit interpreter
 				return INTERPRET_OK;
 		}
 	}

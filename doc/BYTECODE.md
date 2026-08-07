@@ -21,7 +21,8 @@
 | [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00001010   | 10      |
 | [`OP_NOT`](#OP_NOT)      | 1      | 0b00001011   | 11      |
 | [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00001100   | 12      |
-| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00001101   | 13      |
+| [`OP_PRINT`](#OP_PRINT)    | 1      | 0b00001101   | 13      |
+| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00001110   | 14      |
 
 ## `OP_CONSTANT`
 
@@ -225,13 +226,28 @@
 // Stack: [-constants[0]] stackTop
 ```
 
-## `OP_RETURN`
+## `OP_PRINT`
 
-**Purpose:** Pop a value from the stack and return it.
+**Purpose:** Pop a value from the stack and print it.
 
 **Inputs:** One value from the top of the stack.
 
-**Outputs:** The value from the top of the stack.
+**Outputs:** The value from the top of the stack to stdout.
+
+```asm
+// Offset - Opcode - Index
+0000    OP_CONSTANT     0
+0002    OP_RETURN
+// Stack: stackTop
+```
+
+## `OP_RETURN`
+
+**Purpose:** Exits the interpreter (temporary).
+
+**Inputs:** None (temporary).
+
+**Outputs:** None (temporary).
 
 ```asm
 // Offset - Opcode - Index

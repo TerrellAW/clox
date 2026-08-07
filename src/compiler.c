@@ -49,6 +49,8 @@ typedef struct {
 
 // Forward declarations
 static void expression();
+static void statement();
+static void declaration();
 static ParseRule* getRule(TokenType type);
 
 // Global parser
@@ -119,6 +121,20 @@ static void consume(TokenType type, const char* message) {
 	}
 
 	errorAtCurrent(message);
+}
+
+// Check if token type matches
+static bool check(TokenType type) {
+	return parser.current.type == type;
+}
+
+// Advance if token type matches
+static bool match(TokenType type) {
+	// Stop if token type doesn't match
+	if (!check(type)) return false;
+	// Advance if it does
+	advance();
+	return true;
 }
 
 // Append a compiled byte to a chunk
@@ -200,6 +216,32 @@ static void parsePrecedence(Precedence precedence) {
 // Handle expressions
 static void expression() {
 	parsePrecedence(PREC_ASSIGNMENT);
+}
+
+// Handle print statement
+static void printStatement() {
+	// Parse expression
+	expression();
+	
+	// Find end of line
+	consume(TOKEN_SEMICOLON, "Expect ';' after value.")
+
+	// Instruction to print result of expression
+	emitByte(OP_PRINT);
+}
+
+// Handle declarations
+static void declaration() {
+	// Forward to statement
+	statement();
+}
+
+// Handle statements
+static void statement() {
+	// Handle print statement
+	if (match(TOKEN_PRINT)) {
+		printStatement();
+	}
 }
 
 // Handle parenthesized groupings
@@ -344,8 +386,10 @@ bool compile(const char* source, Chunk* chunk) {
 	// Consume first character
 	advance();
 
-	// Parse and compile expression
-	expression();
+	// Parse and compile declarations/statements until end of file
+	while (!match(TOKEN_EOF)) {
+		declaration();
+	}
 
 	// Look for end of file
 	consume(TOKEN_EOF, "Expect end of expression.");
