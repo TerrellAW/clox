@@ -129,7 +129,7 @@ static void skipWhitespace() {
 static TokenType checkKeyword(size_t start, size_t length,
 		const char* rest, TokenType type) {
 	// Compare lexeme to keyword to see if it matches exactly
-	if (scanner.current - scanner.start == start + length &&
+	if ((size_t)(scanner.current - scanner.start) == start + length &&
 			memcmp(scanner.start + start, rest, length) == 0) {
 		return type;
 	}
