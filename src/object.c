@@ -6,6 +6,7 @@
 
 #include "memory.h"
 #include "object.h"
+#include "table.h"
 #include "value.h"
 #include "vm.h"
 
@@ -30,6 +31,9 @@ static ObjString* allocateString(char* chars, size_t length, uint32_t hash) {
 	string->chars	= chars;
 	string->hash	= hash;
 
+	// Intern string
+	tableSet(&vm.strings, string, NIL_VAL);
+
 	// Return newly allocated lox string
 	return string;
 }
@@ -53,6 +57,15 @@ ObjString* takeString(char* chars, size_t length) {
 	// Calculate hash code for string
 	uint32_t hash = hashString(chars, length);
 
+	// Check if string is interned
+	ObjString* interned = tableFindString(&vm.strings, chars, length, hash);
+
+	// If it is interned, return the interned string
+	if (interned != NULL) {
+		FREE_ARRAY(char, chars, length + 1);
+		return interned;
+	}
+
 	return allocateString(chars, length, hash);
 }
 
@@ -60,6 +73,10 @@ ObjString* takeString(char* chars, size_t length) {
 ObjString* copyString(const char* chars, size_t length) {
 	// Calculate hash code for string
 	uint32_t hash = hashString(chars, length);
+
+	// Check if string is already interned and return interned string instead
+	ObjString* interned = tableFindString(&vm.strings, chars, length, hash);
+	if (interned != NULL) return interned;
 
 	// Allocate array of chars on the heap
 	char* heapChars = ALLOCATE(char, length + 1);

@@ -47,10 +47,13 @@ static void runtimeError(const char* format, ...) {
 void initVM() {
 	resetStack();
 	vm.objects = NULL;
+	initTable(&vm.strings);
 }
 
 // Free vm
 void freeVM() {
+	// Free internal strings
+	freeTable(&vm.strings);
 	// Free all remaining objects
 	freeObjects();
 }

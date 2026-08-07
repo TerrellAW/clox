@@ -58,4 +58,9 @@ bool tableDelete(Table* table, ObjString* key);
  */
 void tableAddAll(Table* from, Table* to);
 
+/**
+ * Find given string in table
+ */
+ObjString* tableFindString(Table* table, const char* chars, size_t length, uint32_t hash);
+
 #endif

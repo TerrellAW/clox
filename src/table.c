@@ -52,7 +52,7 @@ static Entry* findEntry(Entry* entries, size_t capacity, ObjString* key) {
 				// Remember tombstone
 				if (tombstone == NULL) tombstone = entry;
 			}
-		// Found key
+		// Found key, works because of string interning
 		} else if (entry->key == key) {
 			return entry;
 		}
@@ -173,5 +173,33 @@ void tableAddAll(Table* from, Table* to) {
 		if (entry->key != NULL) {
 			tableSet(to, entry->key, entry->value);
 		}
+	}
+}
+
+// Find a string in the interned string table to avoid adding duplicates
+ObjString* tableFindString(Table* table, const char* chars, size_t length, uint32_t hash) {
+	// Check if table is empty
+	if (table->count == 0) return NULL;
+
+	// Get index
+	uint32_t index = hash % table->capacity;
+
+	// Iterate through entries to find matching string
+	for (;;) {
+		// Get entry
+		Entry* entry = &table->entries[index];
+
+		// Stop if empty bucket is found
+		if (entry->key == NULL) {
+			if (IS_NIL(entry->value)) return NULL;
+		// Matching string found
+		} else if (entry->key->length == length &&
+				   entry->key->hash == hash		&&
+				   memcmp(entry->key->chars, chars, length) == 0) {
+			return entry->key;
+		}
+
+		// Increment index
+		index = (index + 1) % table->capacity;
 	}
 }

@@ -7,6 +7,7 @@
 
 #include "chunk.h"
 #include "value.h"
+#include "table.h"
 
 /**
  * Define maximum size of a stack
@@ -25,6 +26,8 @@ typedef struct {
 	// Value stack
 	Value stack[STACK_MAX];
 	Value* stackTop;
+	// Table of interned strings
+	Table strings;
 	// Pointer to start of Obj linked list
 	Obj* objects;
 } VM;
