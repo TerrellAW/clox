@@ -36,7 +36,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 # Run test
 test: $(BIN)
-	./$(BIN)
+	@if command -v rlwrap >/dev/null 2>&1; then		\
+		rlwrap ./$(BIN);							\
+	else											\
+		./$(BIN);									\
+	fi
 
 # Clean build artifacts and configuration
 clean:
