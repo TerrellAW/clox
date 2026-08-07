@@ -171,6 +171,10 @@ InterpretResult run() {
 				// Push false onto the stack
 				push(BOOL_VAL(false));
 				break;
+			case OP_POP:
+				// Pop value from top of stack
+				pop();
+				break;
 			case OP_EQUAL:
 				// Pop two values from the stack
 				Value a = pop();

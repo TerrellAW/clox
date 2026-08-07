@@ -213,9 +213,21 @@ static void parsePrecedence(Precedence precedence) {
 	}
 }
 
-// Handle expressions
+// Handle expression
 static void expression() {
 	parsePrecedence(PREC_ASSIGNMENT);
+}
+
+// Handle expression statement
+static void expressionStatement() {
+	// Parse expression
+	expression();
+
+	// Find end of line
+	consume(TOKEN_SEMICOLON, "Expect ';' after value.");
+
+	// Instruction to pop value from the stack
+	emitByte(OP_POP);
 }
 
 // Handle print statement
@@ -241,6 +253,9 @@ static void statement() {
 	// Handle print statement
 	if (match(TOKEN_PRINT)) {
 		printStatement();
+	// Handle expression statement
+	} else {
+		expressionStatement();
 	}
 }
 

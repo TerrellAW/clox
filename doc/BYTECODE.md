@@ -12,17 +12,18 @@
 | [`OP_NIL`](#OP_NIL)      | 1      | 0b00000001   | 1       |
 | [`OP_TRUE`](#OP_TRUE)     | 1      | 0b00000010   | 2       |
 | [`OP_FALSE`](#OP_FALSE)    | 1      | 0b00000011   | 3       |
-| [`OP_EQUAL`](#OP_EQUAL)    | 1      | 0b00000100   | 4       |
-| [`OP_GREATER`](#OP_GREATER)  | 1      | 0b00000101   | 5       |
-| [`OP_LESS`](#OP_LESS)     | 1      | 0b00000110   | 6       |
-| [`OP_ADD`](#OP_ADD)      | 1      | 0b00000111   | 7       |
-| [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00001000   | 8       |
-| [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00001001   | 9       |
-| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00001010   | 10      |
-| [`OP_NOT`](#OP_NOT)      | 1      | 0b00001011   | 11      |
-| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00001100   | 12      |
-| [`OP_PRINT`](#OP_PRINT)    | 1      | 0b00001101   | 13      |
-| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00001110   | 14      |
+| [`OP_POP`](#OP_POP)      | 1      | 0b00000100   | 4       |
+| [`OP_EQUAL`](#OP_EQUAL)    | 1      | 0b00000101   | 5       |
+| [`OP_GREATER`](#OP_GREATER)  | 1      | 0b00000110   | 6       |
+| [`OP_LESS`](#OP_LESS)     | 1      | 0b00000111   | 7       |
+| [`OP_ADD`](#OP_ADD)      | 1      | 0b00001000   | 8       |
+| [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00001001   | 9       |
+| [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00001010   | 10      |
+| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00001011   | 11      |
+| [`OP_NOT`](#OP_NOT)      | 1      | 0b00001100   | 12      |
+| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00001101   | 13      |
+| [`OP_PRINT`](#OP_PRINT)    | 1      | 0b00001110   | 14      |
+| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00001111   | 15      |
 
 ## `OP_CONSTANT`
 
@@ -82,6 +83,21 @@
 0000    OP_FALSE
 0001    OP_FALSE
 // Stack: [false][false] stackTop
+```
+
+## `OP_POP`
+
+**Purpose:** Pops value from the stack.
+
+**Inputs:** Value from the top of the stack.
+
+**Outputs:** None.
+
+```asm
+// Offset - Opcode - Index
+0000    OP_FALSE
+0001    OP_POP
+// Stack: stackTop
 ```
 
 ## `OP_EQUAL`
@@ -237,7 +253,7 @@
 ```asm
 // Offset - Opcode - Index
 0000    OP_CONSTANT     0
-0002    OP_RETURN
+0002    OP_PRINT
 // Stack: stackTop
 ```
 
