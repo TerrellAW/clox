@@ -18,6 +18,7 @@ To automatically clean out old build results and configs and then build a new ex
 - [C compiler](https://gcc.gnu.org/)
 - [Make](https://ftp.gnu.org/old-gnu/Manuals/make-3.80/html_node/make.html)
 - [Bear (Optional)](https://github.com/rizsotto/bear)
+- [rlwrap (Optional)](https://github.com/hanslub42/rlwrap)
 
 ## Syntax
 
