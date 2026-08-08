@@ -43,8 +43,8 @@ This program can be run with [`rlwrap`](https://github.com/hanslub42/rlwrap):
 rlwrap clox
 ```
 
-There is a `make` target which will run start the REPL for you.
-It will automatically check if you have `rlwrap` and use it if you do.
+There is a `make` target which will start the REPL for you.
+It will automatically check if you have `rlwrap` and use it if you do:
 
 ```bash
 make test
