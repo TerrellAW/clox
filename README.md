@@ -20,6 +20,44 @@ To automatically clean out old build results and configs and then build a new ex
 - [Bear (Optional)](https://github.com/rizsotto/bear)
 - [rlwrap (Optional)](https://github.com/hanslub42/rlwrap)
 
+## Usage
+
+The clox runtime has two modes; 
+command prompt 
+[REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) 
+and file execution.
+
+### Command Prompt REPL
+
+Simply run the binary from your terminal:
+
+```bash
+clox
+```
+
+You will be able to enter valid lox code at the `>` prompt.
+
+This program can be run with [`rlwrap`](https://github.com/hanslub42/rlwrap):
+
+```bash
+rlwrap clox
+```
+
+There is a `make` target which will run start the REPL for you.
+It will automatically check if you have `rlwrap` and use it if you do.
+
+```bash
+make test
+```
+
+### File Execution
+
+Simply pass the file you wish to execute to `clox`:
+
+```bash
+clox path/to/file.lox
+```
+
 ## Syntax
 
 Example code written in DotLox can be found [here](https://github.com/TerrellAW/DotLox/tree/main/examples).
