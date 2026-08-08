@@ -44,14 +44,16 @@ test: $(BIN)
 
 # Clean build artifacts and configuration
 clean:
-	@if [ -f $(BIN) ]; then								\
+	@if [ -f $(BIN) ]; then									\
 		rm -rf $(OBJ_DIR) $(BIN_DIR) compile_commands.json;	\
 	fi
 
 # Make with bear configuration tool
 bear:
-	@if [ command -v bear >/dev/null 2>&1 ]; then	\
-		echo "Bear clang configuration generator not installed. Try installing it from your package manager or GitHub: https://github.com/rizsotto/bear";			  \
-	else											\
-		make clean && bear -- make;					\
+	@if command -v bear >/dev/null 2>&1; then				 		\
+		make clean && bear -- make;									\
+	else															\
+		echo "Bear clang configuration generator not installed." 	\
+		      "Try installing it from your package manager or"	 	\
+			  "GitHub: https://github.com/rizsotto/bear"; 		 	\
 	fi
