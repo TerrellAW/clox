@@ -242,10 +242,45 @@ static void printStatement() {
 	emitByte(OP_PRINT);
 }
 
+// Handle error synchronization
+// Ignores tokens until a statement boundary is found
+static void synchronize() {
+	// Reset panic mode flag
+	parser.panicMode = false;
+
+	// Consume until statement boundary
+	while (parser.current.type != EOF) {
+		// Stop at end of line
+		if (parser.previous.type == TOKEN_SEMICOLON) return;
+
+		// Stop at next statement
+		switch (parser.current.type) {
+			case TOKEN_CLASS:
+			case TOKEN_FUN:
+			case TOKEN_VAR:
+			case TOKEN_FOR:
+			case TOKEN_IF:
+			case TOKEN_WHILE:
+			case TOKEN_PRINT:
+			case TOKEN_RETURN:
+				return;
+
+			default:
+				/* Nothing */;
+		}
+
+		// Advance without parsing
+		advance();
+	}
+}
+
 // Handle declarations
 static void declaration() {
 	// Forward to statement
 	statement();
+
+	// Start error synchronization
+	if (parser.panicMode) synchronize();
 }
 
 // Handle statements
