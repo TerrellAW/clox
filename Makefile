@@ -50,4 +50,8 @@ clean:
 
 # Make with bear configuration tool
 bear:
-	make clean && bear -- make
+	@if [ command -v bear >/dev/null 2>&1 ]; then	\
+		echo "Bear clang configuration generator not installed. Try installing it from your package manager or GitHub: https://github.com/rizsotto/bear";			  \
+	else											\
+		make clean && bear -- make;					\
+	fi
