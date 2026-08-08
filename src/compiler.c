@@ -364,7 +364,7 @@ static void string() {
 // Load variable
 static void namedVariable(Token name) {
 	// Get identifier's index
-	uint8_t arg = indentifierConstant(&name);
+	uint8_t arg = identifierConstant(&name);
 
 	// Op code to get global variable
 	emitBytes(OP_GET_GLOBAL, arg);
