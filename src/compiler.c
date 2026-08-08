@@ -213,9 +213,48 @@ static void parsePrecedence(Precedence precedence) {
 	}
 }
 
+// Add identifier to constant pool and return its index
+static uint8_t identifierConstant(Token* name) {
+	return makeConstant(OBJ_VAL(copyString(name->start, name->length)));
+}
+
+// Try to parse variable name, report error if it failes
+static uint8_t parseVariable(const char* errorMessage) {
+	// Check for identifier
+	consume(TOKEN_IDENT, errorMessage);
+
+	// Make an identifier constant and return its index
+	return identifierConstant(&parser.previous);
+}
+
+// Define global variable on the stack
+static void defineVariable(uint8_t global) {
+	emitBytes(OP_DEFINE_GLOBAL, global);
+}
+
 // Handle expression
 static void expression() {
 	parsePrecedence(PREC_ASSIGNMENT);
+}
+
+// Handle variable declaration
+static void varDeclaration() {
+	// Parse and store global variable
+	uint8_t global = parseVariable("Expect variable name.");
+
+	// Parse expression and store result
+	if (match(TOKEN_EQUAL)) {
+		expression();
+	// Set as nil if no initializer
+	} else {
+		emitByte(OP_NIL);
+	}
+
+	// Check for semicolon
+	consume(TOKEN_SEMICOLON, "Expect ';' after variable declaration.");
+
+	// Create the global variable on the stack
+	defineVariable(global);
 }
 
 // Handle expression statement
@@ -276,8 +315,13 @@ static void synchronize() {
 
 // Handle declarations
 static void declaration() {
-	// Forward to statement
-	statement();
+	// If variable declaration forward to varDeclaration()
+	if (match(TOKEN_VAR)) {
+		varDeclaration();
+	// If not a declaration forward to statement()
+	} else {
+		statement();
+	}
 
 	// Start error synchronization
 	if (parser.panicMode) synchronize();
@@ -315,6 +359,20 @@ static void number() {
 // Handle string token
 static void string() {
 	emitConstant(OBJ_VAL(copyString(parser.previous.start + 1, parser.previous.length - 2)));
+}
+
+// Load variable
+static void namedVariable(Token name) {
+	// Get identifier's index
+	uint8_t arg = indentifierConstant(&name);
+
+	// Op code to get global variable
+	emitBytes(OP_GET_GLOBAL, arg);
+}
+
+// Handle variables
+static void variable() {
+	namedVariable(parser.previous);
 }
 
 // Handle binary expression
@@ -393,7 +451,7 @@ ParseRule rules[] = {
     [TOKEN_GREATER_EQUAL] = {NULL, 		binary,	  PREC_COMPARISON},
     [TOKEN_LESS]          = {NULL, 		binary,	  PREC_COMPARISON},
     [TOKEN_LESS_EQUAL]    = {NULL, 		binary,	  PREC_COMPARISON},
-    [TOKEN_IDENT]         = {NULL, 		NULL,	  PREC_NONE},
+    [TOKEN_IDENT]         = {variable,	NULL,	  PREC_NONE},
     [TOKEN_STRING]        = {string,	NULL,	  PREC_NONE},
     [TOKEN_NUMBER]        = {number, 	NULL,	  PREC_NONE},
     [TOKEN_AND]           = {NULL,		NULL,	  PREC_NONE},

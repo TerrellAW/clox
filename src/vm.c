@@ -47,11 +47,14 @@ static void runtimeError(const char* format, ...) {
 void initVM() {
 	resetStack();
 	vm.objects = NULL;
+	initTable(&vm.globals);
 	initTable(&vm.strings);
 }
 
 // Free vm
 void freeVM() {
+	// Free global variables
+	freeTable(&vm.globals);
 	// Free internal strings
 	freeTable(&vm.strings);
 	// Free all remaining objects
@@ -117,6 +120,9 @@ InterpretResult run() {
 // Read all bytes that make up a constant
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
 
+// Return string from constant pool
+#define READ_STRING() AS_STRING(READ_CONSTANT());
+
 // Do a binary operation with mathematical operators and push result to stack
 // Do while loop allows scoping without errors from trailing semicolon
 #define BINARY_OP(valueType, op) 							\
@@ -175,6 +181,35 @@ InterpretResult run() {
 				// Pop value from top of stack
 				pop();
 				break;
+			case OP_GET_GLOBAL: {
+				// Get identifier name from constant pool
+				ObjString* name = READ_STRING();
+
+				// Initialize variable to store global's value
+				Value value;
+
+				// Try to get global's value
+				if (!tableGet(&vm.globals, name, &value)) {
+					// Report error if failed
+					runtimeError("Undefined variable '%s'.", name->chars);
+
+					// End interpreter with runtime error
+					return INTERPRET_RUNTIME_ERROR;
+				}
+				
+				// Push global's value to the stack
+				push(value);
+				break;
+			}
+			case OP_DEFINE_GLOBAL: {
+				// Get identifier name from constant pool
+				ObjString* name = READ_STRING();
+
+				// Add to globals hash table and pop from stack
+				tableSet(&vm.globals, name, peek(0));
+				pop();
+				break;
+			}
 			case OP_EQUAL:
 				// Pop two values from the stack
 				Value a = pop();
@@ -253,6 +288,7 @@ InterpretResult run() {
 // Undefine macros
 #undef READ_BYTE
 #undef READ_CONSTANT
+#undef READ_STRING
 #undef BINARY_OP
 }
 

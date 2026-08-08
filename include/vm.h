@@ -26,6 +26,8 @@ typedef struct {
 	// Value stack
 	Value stack[STACK_MAX];
 	Value* stackTop;
+	// Table of global variables
+	Table globals;
 	// Table of interned strings
 	Table strings;
 	// Pointer to start of Obj linked list
