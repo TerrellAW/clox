@@ -15,17 +15,18 @@
 | [`OP_POP`](#OP_POP)      | 1      | 0b00000100   | 4       |
 | [`OP_GET_GLOBAL`](#OP_GET_GLOBAL) | 2    | 0b00000101   | 5       |
 | [`OP_DEFINE_GLOBAL`](#OP_DEFINE_GLOBAL) | 2 | 0b00000110   | 6       |
-| [`OP_EQUAL`](#OP_EQUAL)    | 1      | 0b00000111   | 7       |
-| [`OP_GREATER`](#OP_GREATER)  | 1      | 0b00001000   | 8       |
-| [`OP_LESS`](#OP_LESS)     | 1      | 0b00001001   | 9       |
-| [`OP_ADD`](#OP_ADD)      | 1      | 0b00001010   | 10      |
-| [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00001011   | 11      |
-| [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00001100   | 12      |
-| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00001101   | 13      |
-| [`OP_NOT`](#OP_NOT)      | 1      | 0b00001110   | 14      |
-| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00001111   | 15      |
-| [`OP_PRINT`](#OP_PRINT)    | 1      | 0b00010000   | 16      |
-| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00010001   | 17      |
+| [`OP_SET_GLOBAL`](#OP_SET_GLOBAL) | 2    | 0b00000111   | 7       |
+| [`OP_EQUAL`](#OP_EQUAL)    | 1      | 0b00001000   | 8       |
+| [`OP_GREATER`](#OP_GREATER)  | 1      | 0b00001001   | 9       |
+| [`OP_LESS`](#OP_LESS)     | 1      | 0b00001010   | 10      |
+| [`OP_ADD`](#OP_ADD)      | 1      | 0b00001011   | 11      |
+| [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00001100   | 12      |
+| [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00001101   | 13      |
+| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00001110   | 14      |
+| [`OP_NOT`](#OP_NOT)      | 1      | 0b00001111   | 15      |
+| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00010000   | 16      |
+| [`OP_PRINT`](#OP_PRINT)    | 1      | 0b00010001   | 17      |
+| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00010010   | 18      |
 
 ## `OP_CONSTANT`
 
@@ -117,6 +118,20 @@ TODO
 ```
 
 ## `OP_DEFINE_GLOBAL`
+
+**Purpose:** TODO
+
+**Inputs:** TODO
+
+**Outputs:** TODO
+
+```asm
+// Offset - Opcode - Index
+TODO
+// Stack: stackTop
+```
+
+## `OP_SET_GLOBAL`
 
 **Purpose:** TODO
 

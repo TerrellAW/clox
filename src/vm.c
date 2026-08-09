@@ -210,6 +210,20 @@ InterpretResult run() {
 				pop();
 				break;
 			}
+			case OP_SET_GLOBAL: {
+				// Get identifier name from constant pool
+				ObjString* name = READ_STRING();
+
+				// Update value of global if it exists, else runtime error
+				if (tableSet(&vm.globals, name, peek(0))) {
+					// Delete newly created variable
+					tableDelete(&vm.globals, name);
+					// Fail with runtime error
+					runtimeError("Undefined variable '%s'.", name->chars);
+					return INTERPRET_RUNTIME_ERROR;
+				}
+				break;
+			}
 			case OP_EQUAL:
 				// Pop two values from the stack
 				Value a = pop();

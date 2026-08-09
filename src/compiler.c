@@ -38,7 +38,7 @@ typedef enum {
 } Precedence;
 
 // Function pointer for ParseFn
-typedef void (*ParseFn)();
+typedef void (*ParseFn)(bool canAssign);
 
 // Rule from a row in the parsing table
 typedef struct {
@@ -199,8 +199,9 @@ static void parsePrecedence(Precedence precedence) {
 		return;
 	}
 
-	// Handle prefix expression
-	prefixRule();
+	// Ensure assignment only occurs at low enough precedence
+	bool canAssign = precedence <= PREC_ASSIGNMENT;
+	prefixRule(canAssign);
 
 	// Handle infix expression
 	while (precedence <= getRule(parser.current.type)->precedence) {
@@ -209,7 +210,12 @@ static void parsePrecedence(Precedence precedence) {
 		
 		// Handle precedence
 		ParseFn infixRule = getRule(parser.previous.type)->infix;
-		infixRule();
+		infixRule(canAssign);
+	}
+
+	// Report invalid assignment
+	if (canAssign && match(TOKEN_EQUAL)) {
+		error("Invalid assignment target.");
 	}
 }
 
@@ -339,7 +345,7 @@ static void statement() {
 }
 
 // Handle parenthesized groupings
-static void grouping() {
+static void grouping(bool canAssign) {
 	// Handle grouped expression
 	expression();
 
@@ -348,7 +354,7 @@ static void grouping() {
 }
 
 // Handle number token
-static void number() {
+static void number(bool canAssign) {
 	// Convert string to double
 	double value = strtod(parser.previous.start, NULL);
 
@@ -357,26 +363,35 @@ static void number() {
 }
 
 // Handle string token
-static void string() {
+static void string(bool canAssign) {
 	emitConstant(OBJ_VAL(copyString(parser.previous.start + 1, parser.previous.length - 2)));
 }
 
 // Load variable
-static void namedVariable(Token name) {
+static void namedVariable(Token name, bool canAssign) {
 	// Get identifier's index
 	uint8_t arg = identifierConstant(&name);
 
-	// Op code to get global variable
-	emitBytes(OP_GET_GLOBAL, arg);
+	// Set global if assignment
+	if (canAssign && match(TOKEN_EQUAL)) {
+		// Parse expression
+		expression();
+		// Store result in global variable
+		emitBytes(OP_SET_GLOBAL, arg);
+	// Else get global
+	} else {
+		// Op code to get global variable
+		emitBytes(OP_GET_GLOBAL, arg);
+	}
 }
 
 // Handle variables
-static void variable() {
-	namedVariable(parser.previous);
+static void variable(bool canAssign) {
+	namedVariable(parser.previous, canAssign);
 }
 
 // Handle binary expression
-static void binary() {
+static void binary(bool canAssign) {
 	// Get operator from previous token
 	TokenType operatorType = parser.previous.type;
 
@@ -404,7 +419,7 @@ static void binary() {
 }
 
 // Handle literals with dedicated opcodes
-static void literal() {
+static void literal(bool canAssign) {
 	switch (parser.previous.type) {
 		case TOKEN_FALSE: 	emitByte(OP_FALSE);	break;
 		case TOKEN_NIL:		emitByte(OP_NIL);	break;
@@ -414,7 +429,7 @@ static void literal() {
 }
 
 // Handle unary expression
-static void unary() {
+static void unary(bool canAssign) {
 	// Get operator from previous token
 	TokenType operatorType = parser.previous.type;
 
