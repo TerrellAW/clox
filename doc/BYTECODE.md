@@ -107,14 +107,14 @@
 
 **Purpose:** Push value associated with a global variable to the stack.
 
-**Inputs:** Identifier index from globals pool.
+**Inputs:** Identifier index from constants pool.
 
 **Outputs:** Global variable's value pushed to stack.
 
 ```asm
 // Offset - Opcode - Index
 0000    OP_GET_GLOBAL   0
-// Stack: [globals[0]->value] stackTop
+// Stack: [constants[0]->value] stackTop
 ```
 
 ## `OP_DEFINE_GLOBAL`
@@ -123,7 +123,7 @@
 
 **Inputs:** Value from top of stack and identifier from globals table.
 
-**Outputs:** Pops value from the stack and stores it, identifier added to globals pool.
+**Outputs:** Pops value from the stack and stores it, identifier added to constants pool.
 
 ```asm
 // Offset - Opcode - Index
@@ -136,15 +136,15 @@
 
 **Purpose:** Update value of an existing global variable.
 
-**Inputs:** Value from top of stack and identifier from globals pool.
+**Inputs:** Value from top of stack and identifier from constants pool.
 
-**Outputs:** Pops value from the stack and replaces an existing global's value with it.
+**Outputs:** Replaces an existing global's value with value from the top of the stack.
 
 ```asm
 // Offset - Opcode - Index
 0000    OP_CONSTANT     1
 0002    OP_SET_GLOBAL   0
-// Stack: stackTop
+// Stack: [constants[1]] stackTop
 ```
 
 ## `OP_EQUAL`
