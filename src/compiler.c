@@ -291,8 +291,13 @@ static int resolveLocal(Compiler* compiler, Token* name) {
 		Local* local = &compiler->locals[i];
 
 		// Return index of local variable, matches slot in stack
-		if (identifiersEqual(name, &local->name))
+		if (identifiersEqual(name, &local->name)) {
+			// Check if variable is initialized and ready for use
+			if (local->depth == -1)
+				error("Can't read local variable in its own initializer.");
+
 			return i;
+		}
 	}
 
 	// Signal that variable isn't local
@@ -312,7 +317,8 @@ static void addLocal(Token name) {
 
 	// Store local variable state
 	local->name  = name;
-	local->depth = current->scopeDepth;
+	// Sentinel value denotes uninitialized variable
+	local->depth = -1;
 }
 
 // Declare existance of local variable
@@ -356,10 +362,22 @@ static uint8_t parseVariable(const char* errorMessage) {
 	return identifierConstant(&parser.previous);
 }
 
+// Mark a variable as initialized by setting correct depth
+static void markInitialized() {
+	// Set last local's scope depth
+	current->locals[current->localCount - 1].depth =
+		current->scopeDepth;
+}
+
 // Define global variable on the stack
 static void defineVariable(uint8_t global) {
 	// Ignore local variables
-	if (current->scopeDepth > 0) return;
+	if (current->scopeDepth > 0) {
+		// Mark variable as initialized
+		markInitialized();
+
+		return;
+	}
 
 	// Compile global declaration
 	emitBytes(OP_DEFINE_GLOBAL, global);
