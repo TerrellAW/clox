@@ -47,6 +47,19 @@ static size_t byteInstruction(const char* name, Chunk* chunk, size_t offset) {
 	return offset + 2;
 }
 
+// Handle jump instruction
+static int jumpInstruction(const char* name, int sign,
+		Chunk* chunk, int offset) {
+	// Get offset for jump
+	uint16_t jump = (uint16_t)(chunk->code[offset + 1] << 8);
+	jump |= chunk->code[offset + 2];
+
+	// Print jump instruction
+	printf("%-16s %4d -> %d\n", name, offset,
+			offset + 3 + sign * jump);
+	return offset + 3;
+}
+
 // Disassemble an instruction
 size_t disassembleInstruction(Chunk* chunk, size_t offset) {
 	// Print offset at beginning of line
@@ -103,6 +116,10 @@ size_t disassembleInstruction(Chunk* chunk, size_t offset) {
 			return simpleInstruction("OP_NEGATE", offset);
 		case OP_PRINT:
 			return simpleInstruction("OP_PRINT", offset);
+		case OP_JUMP:
+			return jumpInstruction("OP_JUMP", 1, chunk, offset);
+		case OP_JUMP_IF_FALSE:
+			return jumpInstruction("OP_JUMP_IF_FALSE", 1, chunk, offset);
 		case OP_RETURN:
 			return simpleInstruction("OP_RETURN", offset);
 		default:

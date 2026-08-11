@@ -117,6 +117,10 @@ InterpretResult run() {
 // Read byte and increment pointer
 #define READ_BYTE() (*vm.ip++)
 
+// Read 2 bytes (16 bit operand)
+#define READ_SHORT()		\
+	(vm.ip += 2, (uint16_t)((vm.ip[-2] << 8) | vm.ip[-1]))
+
 // Read all bytes that make up a constant
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
 
@@ -305,6 +309,22 @@ InterpretResult run() {
 				// Print newline at end of value
 				printf("\n");
 				break;
+			case OP_JUMP: {
+				// Get offset to jump to
+				uint16_t offset = READ_SHORT();
+
+				// Move instruction pointer
+				vm.ip += offset;
+				break;
+		  	}
+			case OP_JUMP_IF_FALSE: {
+				// Get offset to jump to
+				uint16_t offset = READ_SHORT();
+
+				// Move instruction pointer
+				if (isFalsey(peek(0))) vm.ip += offset;
+				break;
+			}
 			case OP_RETURN:
 #ifdef DEBUG_TRACE_EXECUTION
 				// Print stack trace end
@@ -317,6 +337,7 @@ InterpretResult run() {
 
 // Undefine macros
 #undef READ_BYTE
+#undef READ_SHORT
 #undef READ_CONSTANT
 #undef READ_STRING
 #undef BINARY_OP

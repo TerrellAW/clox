@@ -28,7 +28,9 @@
 | [`OP_NOT`](#OP_NOT)      | 1      | 0b00010001   | 17      |
 | [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00010010   | 18      |
 | [`OP_PRINT`](#OP_PRINT)    | 1      | 0b00010011   | 19      |
-| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00010100   | 20      |
+| [`OP_JUMP`](#OP_JUMP)     | 3      | 0b00010100   | 20      |
+| [`OP_JUMP_IF_FALSE`](#OP_JUMP_IF_FALSE) | 3 | 0b00010101   | 21      |
+| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00010110   | 22      |
 
 ## `OP_CONSTANT`
 
@@ -334,6 +336,34 @@
 0001    OP_PRINT
 // Stack: stackTop
 // stdout: true
+```
+
+## `OP_JUMP`
+
+**Purpose:** TODO
+
+**Inputs:** TODO
+
+**Outputs:** TODO
+
+```asm
+// Offset - Opcode - Index
+TODO
+// Stack: stackTop
+```
+
+## `OP_JUMP_IF_FALSE`
+
+**Purpose:** TODO
+
+**Inputs:** TODO
+
+**Outputs:** TODO
+
+```asm
+// Offset - Opcode - Index
+TODO
+// Stack: stackTop
 ```
 
 ## `OP_RETURN`

@@ -167,6 +167,19 @@ static void emitBytes(uint8_t byte1, uint8_t byte2) {
 	emitByte(byte2);
 }
 
+// Append a jump instruction to a chunk
+static int emitJump(uint8_t instruction) {
+	// Emit specified jump instruction
+	emitByte(instruction);
+	
+	// Placeholder offset
+	emitByte(0xff);
+	emitByte(0xff);
+
+	// Don't count offset as separate instruction
+	return currentChunk()->count - 2;
+}
+
 // Append a return code to a chunk
 static void emitReturn() {
 	emitByte(OP_RETURN);
@@ -190,6 +203,21 @@ static uint8_t makeConstant(Value value) {
 // Append a constant code and operand to a chunk
 static void emitConstant(Value value) {
 	emitBytes(OP_CONSTANT, makeConstant(value));
+}
+
+// Patch jump instruction with correct offset
+static void patchJump(int offset) {
+	// Go back 2 offsets to beginning of jump offset
+	int jump = currentChunk()->count - offset - 2;
+
+	// Ensure less than max possible offset
+	if (jump > UINT16_MAX) {
+		error("Too much code to jump over.");
+	}
+
+	// Patch offset with bitwise operations
+	currentChunk()->code[offset] = (jump >> 8) & 0xff;
+	currentChunk()->code[offset + 1] = jump & 0xff;
 }
 
 // Initialize compiler
@@ -431,6 +459,38 @@ static void expressionStatement() {
 	emitByte(OP_POP);
 }
 
+// Handle branching based on value at top of stack
+static void ifStatement() {
+	// Handle parentheses and condition
+	consume(TOKEN_LEFT_PAREN, "Expect '(' after 'if'.");
+	expression();
+	consume(TOKEN_RIGHT_PAREN, "Expect ')' after condition.");
+
+	// Create jump instruction with placeholder offset
+	int thenJump = emitJump(OP_JUMP_IF_FALSE);
+
+	// Discard condition
+	emitByte(OP_POP);
+
+	// Parse statement
+	statement();
+
+	// Skip else branch if truthy
+	int elseJump = emitJump(OP_JUMP);
+
+	// Patch jump instruction with actual offset to jump to
+	patchJump(thenJump);
+
+	// Discard condition
+	emitByte(OP_POP);
+
+	// Parse else branch
+	if (match(TOKEN_ELSE)) statement();
+
+	// Path else jump instruction
+	patchJump(elseJump);
+}
+
 // Handle print statement
 static void printStatement() {
 	// Parse expression
@@ -494,6 +554,9 @@ static void statement() {
 	// Handle print statement
 	if (match(TOKEN_PRINT)) {
 		printStatement();
+	// Handle if statement
+	} else if (match(TOKEN_IF)) {
+		ifStatement();
 	// Handle block statement
 	} else if (match(TOKEN_LEFT_BRACE)) {
 		beginScope(); 	// {
