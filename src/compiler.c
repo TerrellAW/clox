@@ -477,7 +477,7 @@ static void statement() {
 	if (match(TOKEN_PRINT)) {
 		printStatement();
 	// Handle block statement
-	} else if (TOKEN_LEFT_BRACE) {
+	} else if (match(TOKEN_LEFT_BRACE)) {
 		beginScope(); 	// {
 		block();		//	code;
 		endScope();		// }
