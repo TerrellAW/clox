@@ -2,6 +2,8 @@
  * Compiler implementations
  */
 
+#include <string.h>
+
 #include "common.h"
 #include "compiler.h"
 #include "scanner.h"
@@ -220,6 +222,17 @@ static void beginScope() {
 // End a scope
 static void endScope() {
 	current->scopeDepth--;
+
+	// Remove all local variables from ended scope
+	while (current->localCount > 0 &&
+		   // Free space by decrementing array count
+		   current->locals[current->localCount - 1].depth >
+		   current->scopeDepth) {
+		// Pop local from the stack
+		emitByte(OP_POP);
+		// Decrement count
+		current->localCount--;
+	}
 }
 
 // Ensure proper parsing precedence
@@ -261,10 +274,67 @@ static uint8_t identifierConstant(Token* name) {
 	return makeConstant(OBJ_VAL(copyString(name->start, name->length)));
 }
 
+// Check if two identifiers are the same
+static bool identifiersEqual(Token* a, Token* b) {
+	// Can't be same if different lengths
+	if (a->length != b->length) return false;
+
+	// Compare only if lengths are the same
+	return memcmp(a->start, b->start, a->length) == 0;
+}
+
+// Add local variable to list
+static void addLocal(Token name) {
+	// Max amount of locals per chunk reached
+	if (current->localCount == UINT8_COUNT) {
+		error("Too many local variables in function.");
+		return;
+	}
+
+	// Add to local variable list and increment count
+	Local* local = &current->locals[current->localCount++];
+
+	// Store local variable state
+	local->name  = name;
+	local->depth = current->scopeDepth;
+}
+
+// Declare existance of local variable
+static void declareVariable() {
+	// Ignore global variables
+	if (current->scopeDepth == 0) return;
+
+	// Get identifier of local variable
+	Token* name = &parser.previous;
+
+	// Iterate through locals to ensure no redeclaring has occurred
+	for (size_t i = current->localCount - 1; i >= 0; i--) {
+		Local* local = &current->locals[i];
+
+		// Its fine to declare variables with same name in different scopes
+		if (local->depth != -1 && local->depth < current->scopeDepth) {
+			break;
+		}
+		
+		// Report error for redeclaring local variable
+		if (identifiersEqual(name, &local->name))
+			error("Already a variable with this name in this scope.");
+	}
+
+	// Add to list tracking local variables
+	addLocal(*name);
+}
+
 // Try to parse variable name, report error if it failes
 static uint8_t parseVariable(const char* errorMessage) {
 	// Check for identifier
 	consume(TOKEN_IDENT, errorMessage);
+
+	// Handled by this function if its a local variable
+	declareVariable();
+	// Since locals aren't looked up by name, index doesn't matter
+	// Local variables live on the stack
+	if (current->scopeDepth > 0) return 0;
 
 	// Make an identifier constant and return its index
 	return identifierConstant(&parser.previous);
@@ -272,6 +342,10 @@ static uint8_t parseVariable(const char* errorMessage) {
 
 // Define global variable on the stack
 static void defineVariable(uint8_t global) {
+	// Ignore local variables
+	if (current->scopeDepth > 0) return;
+
+	// Compile global declaration
 	emitBytes(OP_DEFINE_GLOBAL, global);
 }
 

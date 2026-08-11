@@ -90,7 +90,7 @@
 
 ## `OP_POP`
 
-**Purpose:** Pops value from the stack. Appears after an expression with an unused result.
+**Purpose:** Pops value from the stack. Appears after an expression with an unused result or a scope with local variables that need to be discarded.
 
 **Inputs:** Value from the top of the stack.
 
