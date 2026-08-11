@@ -13,20 +13,22 @@
 | [`OP_TRUE`](#OP_TRUE)     | 1      | 0b00000010   | 2       |
 | [`OP_FALSE`](#OP_FALSE)    | 1      | 0b00000011   | 3       |
 | [`OP_POP`](#OP_POP)      | 1      | 0b00000100   | 4       |
-| [`OP_GET_GLOBAL`](#OP_GET_GLOBAL) | 2    | 0b00000101   | 5       |
-| [`OP_DEFINE_GLOBAL`](#OP_DEFINE_GLOBAL) | 2 | 0b00000110   | 6       |
-| [`OP_SET_GLOBAL`](#OP_SET_GLOBAL) | 2    | 0b00000111   | 7       |
-| [`OP_EQUAL`](#OP_EQUAL)    | 1      | 0b00001000   | 8       |
-| [`OP_GREATER`](#OP_GREATER)  | 1      | 0b00001001   | 9       |
-| [`OP_LESS`](#OP_LESS)     | 1      | 0b00001010   | 10      |
-| [`OP_ADD`](#OP_ADD)      | 1      | 0b00001011   | 11      |
-| [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00001100   | 12      |
-| [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00001101   | 13      |
-| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00001110   | 14      |
-| [`OP_NOT`](#OP_NOT)      | 1      | 0b00001111   | 15      |
-| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00010000   | 16      |
-| [`OP_PRINT`](#OP_PRINT)    | 1      | 0b00010001   | 17      |
-| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00010010   | 18      |
+| [`OP_GET_LOCAL`](#OP_GET_LOCAL) | 2     | 0b00000101   | 5       |
+| [`OP_SET_LOCAL`](#OP_SET_LOCAL) | 2     | 0b00000110   | 6       |
+| [`OP_GET_GLOBAL`](#OP_GET_GLOBAL) | 2    | 0b00000111   | 7       |
+| [`OP_DEFINE_GLOBAL`](#OP_DEFINE_GLOBAL) | 2 | 0b00001000   | 8       |
+| [`OP_SET_GLOBAL`](#OP_SET_GLOBAL) | 2    | 0b00001001   | 9       |
+| [`OP_EQUAL`](#OP_EQUAL)    | 1      | 0b00001010   | 10      |
+| [`OP_GREATER`](#OP_GREATER)  | 1      | 0b00001011   | 11      |
+| [`OP_LESS`](#OP_LESS)     | 1      | 0b00001100   | 12      |
+| [`OP_ADD`](#OP_ADD)      | 1      | 0b00001101   | 13      |
+| [`OP_SUBTRACT`](#OP_SUBTRACT) | 1      | 0b00001110   | 14      |
+| [`OP_MULTIPLY`](#OP_MULTIPLY) | 1      | 0b00001111   | 15      |
+| [`OP_DIVIDE`](#OP_DIVIDE)   | 1      | 0b00010000   | 16      |
+| [`OP_NOT`](#OP_NOT)      | 1      | 0b00010001   | 17      |
+| [`OP_NEGATE`](#OP_NEGATE)   | 1      | 0b00010010   | 18      |
+| [`OP_PRINT`](#OP_PRINT)    | 1      | 0b00010011   | 19      |
+| [`OP_RETURN`](#OP_RETURN)   | 1      | 0b00010100   | 20      |
 
 ## `OP_CONSTANT`
 
@@ -101,6 +103,35 @@
 0000    OP_FALSE
 0001    OP_POP
 // Stack: stackTop
+```
+
+## `OP_GET_LOCAL`
+
+**Purpose:** Get value associated with local variable and push to top of stack.
+
+**Inputs:** Slot for variable value in stack.
+
+**Outputs:** Value of local variable pushed to top of stack where it can be used.
+
+```asm
+// Offset - Opcode - Index
+0000    OP_GET_LOCAL    3
+// Stack: [stuff][constants[3]] stackTop
+```
+
+## `OP_SET_LOCAL`
+
+**Purpose:** Associate value at top of stack with local variable.
+
+**Inputs:** Slot for variable value in stack.
+
+**Outputs:** Local variable added to list and tracked for removal when scope ends.
+
+```asm
+// Offset - Opcode - Index
+0000    OP_CONSTANT     1
+0002    OP_SET_LOCAL    0
+// Stack: [constants[1]] stackTop
 ```
 
 ## `OP_GET_GLOBAL`

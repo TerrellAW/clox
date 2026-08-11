@@ -52,7 +52,7 @@ typedef struct {
 // Local variable struct for tracking scopes
 typedef struct {
 	Token name;
-	size_t depth;
+	int depth;
 } Local;
 
 // Compiler struct for tracking state
@@ -60,7 +60,7 @@ typedef struct {
 	// Local variable tracking
 	Local locals[UINT8_COUNT];
 	size_t localCount;
-	size_t scopeDepth;
+	int scopeDepth;
 } Compiler;
 
 // Forward declarations
@@ -283,6 +283,22 @@ static bool identifiersEqual(Token* a, Token* b) {
 	return memcmp(a->start, b->start, a->length) == 0;
 }
 
+// Resolve a local variable
+static int resolveLocal(Compiler* compiler, Token* name) {
+	// Iterate through locals in scope backwards to ensure proper shadowing
+	for (int i = compiler->localCount - 1; i >= 0; i--) {
+		// Get local from array
+		Local* local = &compiler->locals[i];
+
+		// Return index of local variable, matches slot in stack
+		if (identifiersEqual(name, &local->name))
+			return i;
+	}
+
+	// Signal that variable isn't local
+	return -1;
+}
+
 // Add local variable to list
 static void addLocal(Token name) {
 	// Max amount of locals per chunk reached
@@ -308,7 +324,7 @@ static void declareVariable() {
 	Token* name = &parser.previous;
 
 	// Iterate through locals to ensure no redeclaring has occurred
-	for (size_t i = current->localCount - 1; i >= 0; i--) {
+	for (int i = current->localCount - 1; i >= 0; i--) {
 		Local* local = &current->locals[i];
 
 		// Its fine to declare variables with same name in different scopes
@@ -496,19 +512,36 @@ static void string(bool canAssign) {
 
 // Load variable
 static void namedVariable(Token name, bool canAssign) {
-	// Get identifier's index
-	uint8_t arg = identifierConstant(&name);
+	// Variable getter and setter instructions
+	uint8_t getOp, setOp;
 
-	// Set global if assignment
+	// Resolve local variable
+	int arg = resolveLocal(current, &name);
+
+	// Check if local
+	if (arg != -1) {
+		// Use local variable instructions
+		getOp = OP_GET_LOCAL;
+		setOp = OP_SET_LOCAL;
+	// Else define global
+	} else {
+		// Use global variable functions
+		arg = identifierConstant(&name);
+		// Use global variable instructions
+		getOp = OP_GET_GLOBAL;
+		setOp = OP_SET_GLOBAL;
+	}
+
+	// Set variable if assignment
 	if (canAssign && match(TOKEN_EQUAL)) {
 		// Parse expression
 		expression();
-		// Store result in global variable
-		emitBytes(OP_SET_GLOBAL, arg);
-	// Else get global
+		// Store result in variable
+		emitBytes(setOp, (uint8_t)arg);
+	// Else get variable
 	} else {
-		// Op code to get global variable
-		emitBytes(OP_GET_GLOBAL, arg);
+		// Get value from variable
+		emitBytes(getOp, (uint8_t)arg);
 	}
 }
 

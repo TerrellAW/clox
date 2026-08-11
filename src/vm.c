@@ -181,6 +181,22 @@ InterpretResult run() {
 				// Pop value from top of stack
 				pop();
 				break;
+			case OP_GET_LOCAL: {
+				// Get slot of local variable
+				uint8_t slot = READ_BYTE();
+
+				// Push value from slot to top of stack
+				push(vm.stack[slot]);
+				break;
+			}
+			case OP_SET_LOCAL: {
+				// Set slot for local variable
+				uint8_t slot = READ_BYTE();
+
+				// Put value in its slot
+				vm.stack[slot] = peek(0);
+				break;
+			}
 			case OP_GET_GLOBAL: {
 				// Get identifier name from constant pool
 				ObjString* name = READ_STRING();
