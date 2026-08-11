@@ -47,6 +47,20 @@ typedef struct {
 	Precedence precedence;
 } ParseRule;
 
+// Local variable struct for tracking scopes
+typedef struct {
+	Token name;
+	size_t depth;
+} Local;
+
+// Compiler struct for tracking state
+typedef struct {
+	// Local variable tracking
+	Local locals[UINT8_COUNT];
+	size_t localCount;
+	size_t scopeDepth;
+} Compiler;
+
 // Forward declarations
 static void expression();
 static void statement();
@@ -55,6 +69,9 @@ static ParseRule* getRule(TokenType type);
 
 // Global parser
 Parser parser;
+
+// Global pointer for tracking current compiler state
+Compiler* current = NULL;
 
 // Bytecode chunk being compiled
 Chunk* compilingChunk;
@@ -173,6 +190,16 @@ static void emitConstant(Value value) {
 	emitBytes(OP_CONSTANT, makeConstant(value));
 }
 
+// Initialize compiler
+static void initCompiler(Compiler* compiler) {
+	// Initialize fields
+	compiler->localCount = 0;
+	compiler->scopeDepth = 0;
+
+	// Point global pointer at it
+	current = compiler;
+}
+
 // Emit return code to end of chunk
 static void endCompiler() {
 	emitReturn();
@@ -183,6 +210,16 @@ static void endCompiler() {
 		disassembleChunk(currentChunk(), "code");
 	}
 #endif
+}
+
+// Start a new scope
+static void beginScope() {
+	current->scopeDepth++;
+}
+
+// End a scope
+static void endScope() {
+	current->scopeDepth--;
 }
 
 // Ensure proper parsing precedence
@@ -241,6 +278,17 @@ static void defineVariable(uint8_t global) {
 // Handle expression
 static void expression() {
 	parsePrecedence(PREC_ASSIGNMENT);
+}
+
+// Handle code inside a block
+static void block() {
+	// Parse code until end of block or end of file
+	while (!check(TOKEN_RIGHT_BRACE) && !check(TOKEN_EOF)) {
+		declaration();
+	}
+
+	// Consume end of block
+	consume(TOKEN_RIGHT_BRACE, "Expect '}' after block.");
 }
 
 // Handle variable declaration
@@ -338,6 +386,11 @@ static void statement() {
 	// Handle print statement
 	if (match(TOKEN_PRINT)) {
 		printStatement();
+	// Handle block statement
+	} else if (TOKEN_LEFT_BRACE) {
+		beginScope(); 	// {
+		block();		//	code;
+		endScope();		// }
 	// Handle expression statement
 	} else {
 		expressionStatement();
@@ -498,6 +551,10 @@ static ParseRule* getRule(TokenType type) {
 bool compile(const char* source, Chunk* chunk) {
 	// Initialize scanner
 	initScanner(source);
+
+	// Initialize compiler
+	Compiler compiler;
+	initCompiler(&compiler);
 
 	// Initialize chunk
 	compilingChunk = chunk;

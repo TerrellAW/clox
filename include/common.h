@@ -19,4 +19,9 @@
 // Prints bytecode with stack
 #define DEBUG_TRACE_EXECUTION
 
+/**
+ * Max unsigned 8 bit integer size for data structures
+ */
+#define UINT8_COUNT (UINT8_MAX + 1)
+
 #endif
