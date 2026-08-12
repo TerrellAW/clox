@@ -2,6 +2,9 @@
 [Bb]in/
 [Bb]uild/
 
+# Test directory
+test/
+
 # Debug files
 .vimspector.json
 launch.json
