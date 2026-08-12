@@ -411,6 +411,21 @@ static void defineVariable(uint8_t global) {
 	emitBytes(OP_DEFINE_GLOBAL, global);
 }
 
+// Parse and operator
+static void and_(bool canAssign) {
+	// Start jump instruction
+	int endJump = emitJump(OP_JUMP_IF_FALSE);
+
+	// Pop discarded branch
+	emitByte(OP_POP);
+
+	// Parse logical operator precedence
+	parsePrecedence(PREC_AND);
+
+	// Patch jump to correct offset
+	patchJump(endJump);
+}
+
 // Handle expression
 static void expression() {
 	parsePrecedence(PREC_ASSIGNMENT);
@@ -710,7 +725,7 @@ ParseRule rules[] = {
     [TOKEN_IDENT]         = {variable,	NULL,	  PREC_NONE},
     [TOKEN_STRING]        = {string,	NULL,	  PREC_NONE},
     [TOKEN_NUMBER]        = {number, 	NULL,	  PREC_NONE},
-    [TOKEN_AND]           = {NULL,		NULL,	  PREC_NONE},
+    [TOKEN_AND]           = {NULL,		and_,	  PREC_AND},
     [TOKEN_CLASS]         = {NULL,	 	NULL,	  PREC_NONE},
     [TOKEN_ELSE]          = {NULL,	 	NULL,	  PREC_NONE},
     [TOKEN_FALSE]         = {literal,	NULL,	  PREC_NONE},
